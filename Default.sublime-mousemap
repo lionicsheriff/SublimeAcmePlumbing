@@ -1,0 +1,12 @@
+[
+  {
+    "button": "button1", "count": 1, "modifiers": [],
+    "command": "acme_select",
+    "press_command": "drag_select"
+  },
+  {
+    "button": "button3", "count": 1, "modifiers": [],
+    "command": "acme_run",
+    "press_command": "drag_select"
+  }
+]
