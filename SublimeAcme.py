@@ -37,17 +37,25 @@ Plumbing = {
 }
 
 class AcmeMouse(sublime_plugin.TextCommand):
-    last_selection = {
-        1: [],
-        2: [],
-        3: []
-    }
+
+    def get_selection(self, mouseButton):
+        settings = self.view.settings()
+        key = "SublimePlumb-mouse" + mouseButton
+        return settings.get(key, [])
+
+    def save_selection(self, mouseButton, selection):
+        settings = self.view.settings()
+        key = "SublimePlumb-mouse" + mouseButton
+        settings.set(key, selection)
 
     def selection_at_cursor(self):
         selection = self.view.sel()[0]
         if selection.b - selection.a == 0:
 
-            contains = [s for s in AcmeMouse.last_selection[1] if s.a <= selection.a and s.b >= selection.b]
+            contains = [s for s in self.get_selection("1")
+                        if s["a"] <= selection.a
+                        and s["b"] >= selection.b]
+
             if len(contains) > 0:
                 selection = contains[0]
             else:
@@ -67,7 +75,7 @@ class AcmeMouse(sublime_plugin.TextCommand):
 
 class AcmeGo(AcmeMouse):
     def run(self, edit):
-        AcmeMouse.last_selection[1] = []
+        pass
 
 class AcmeRun(AcmeMouse):
     class CommandTypes:
@@ -86,13 +94,15 @@ class AcmeRun(AcmeMouse):
         out = out.decode(encoding='utf-8')
 
         if type == self.CommandTypes.PIPE:
-            sel = AcmeMouse.last_selection[1][0]
-            self.view.replace(edit, sel, out)
+            sel = self.get_selection("1")[0]
+            region = sublime.Region(int(sel["a"]), int(sel["b"]))
+            self.view.replace(edit, region, out)
         else:
             last_char = self.view.size()
             self.view.insert(edit, last_char, "\n" + out)
 
-        AcmeMouse.last_selection[1] = []
+        self.save_selection("1", [])
+        self.view.sel().clear()
 
     def get_command_type(self, selection):
         first_char = self.view.substr(Region(selection.a, selection.a + 1))
@@ -107,7 +117,9 @@ class AcmeRun(AcmeMouse):
         return self.CommandTypes.NORMAL
 
     def run_command(self, command, type):
-        if not command or (type == self.CommandTypes.PIPE and len(AcmeMouse.last_selection[1]) == 0):
+        selection = self.get_selection("1")
+
+        if not command or (type == self.CommandTypes.PIPE and len(selection) == 0):
             return None
 
         cwd = "~"
@@ -117,7 +129,8 @@ class AcmeRun(AcmeMouse):
 
         p = Popen([command], shell=True, stdin=PIPE, stdout=PIPE, cwd=cwd)
         if type == self.CommandTypes.PIPE:
-            stdin = self.view.substr(AcmeMouse.last_selection[1][0])
+            inputRegion = sublime.Region(selection[0]["a"], selection[0]["b"])
+            stdin = self.view.substr(inputRegion)
             stdin.encode('utf-8')
             return p.communicate(input=str.encode(stdin))
         if type == self.CommandTypes.SILENT:
@@ -126,12 +139,14 @@ class AcmeRun(AcmeMouse):
             return p.communicate()
 
 
-        # ls -lh
-        # |md5sum
-        # md5sum
-
-class AcmeSelect(sublime_plugin.TextCommand):
+class AcmeSelect(AcmeMouse):
     def run_(self, edit_token, args):
         event = args['event']
-        AcmeMouse.last_selection[event["button"]] = [r for r in self.view.sel()]
-        print (AcmeMouse.last_selection)
+        selection = [{"a": r.a, "b": r.b}
+                     for r in self.view.sel()]
+        self.save_selection(str(event["button"]), selection)
+
+# Tests:        
+# ls -lh
+# |md5sum
+# md5sum
