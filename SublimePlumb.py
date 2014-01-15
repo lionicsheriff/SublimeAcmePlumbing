@@ -102,7 +102,7 @@ class AcmeGo(AcmeMouse):
     def match_rule(self, rule, text):
         matched = True
         match_data = {}
-        
+
         if "pattern" in rule["match"]:
             pattern = rule["match"]["pattern"]
             matches = re.search(pattern, text)
@@ -153,10 +153,14 @@ class AcmeGo(AcmeMouse):
 
         out = out.decode(encoding='utf-8')
         window = self.view.window()
-        results = window.new_file()
-        results.set_scratch(True)
-        results.insert(edit, 0, out)
-        window.focus_view(results)
+        if os.path.isfile(command):
+            window.open_file(command)
+        else:
+            results = window.new_file()
+            results.set_scratch(True)
+            results.insert(edit, 0, out)
+            window.focus_view(results)
+
 
 
 
