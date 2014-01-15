@@ -194,14 +194,19 @@ class AcmeGo(AcmeMouse):
                         view.sel().add(sublime.Region(point))
                         view.show(point)
             elif jump_type == "#":
-                sel = view.sel()[0]
-                current_pos = view.sel()[0] if len(sel)> 0 else sublime.Region(0,0)
-                next_pos = view.find(position,current_pos.a)
+                sel = view.sel()
+                current_pos = view.sel()[0] if len(sel) > 0 else sublime.Region(0,0)
+                next_pos = view.find(position,current_pos.b)
                 view.sel().clear()
-                view.sel().add(next_pos)
-                view.show(view.sel()[0])
+                if next_pos.a == -1:
+                    next_pos = view.find(position,1)
+                if next_pos.a != -1:
+                    view.sel().add(next_pos)
+                    view.show(view.sel()[0])
 
         # SublimePlumb.py@AcmeGo
+        # @AcmeSelect
+        # :34
 
 
     def start(self, command, text, match):
