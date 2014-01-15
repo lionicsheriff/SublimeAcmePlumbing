@@ -158,10 +158,15 @@ class AcmeGo(AcmeMouse):
 
     def open(self, command, text, match_data, edit, rule):
         command = self.generate_command(command, text, match_data)
+
+        file, jump_type, position = self.extract_jump(text)
+        # SublimePlumb.py@AcmeGo
+        # @AcmeGo
+        print(command, file, jump_type, position)
         window = self.view.window()
-        if os.path.isfile(command):
+        if file and os.path.isfile(command):
             window.open_file(command)
-        else:
+        elif file:
             out, err = self.run_command(command, self.CommandTypes.NORMAL)
 
             if out == None:
