@@ -85,12 +85,12 @@ class AcmeGo(AcmeMouse):
         # mandb(8)
         # http://www.google.com
         # pydoc(re)
+        # SublimePlumb.sublime-settings
         selection = self.view.substr(self.selection_at_cursor())
         for rule in self.settings.get("rules"):
             matched, match_data = self.match_rule(rule, selection)
-
-            print (matched, match_data)
             if (matched):
+                print(rule, matched, match_data)
                 if "open" in rule:
                     self.open(rule["open"], selection, match_data, edit)
 
@@ -102,13 +102,29 @@ class AcmeGo(AcmeMouse):
     def match_rule(self, rule, text):
         matched = True
         match_data = {}
+        
         if "pattern" in rule["match"]:
             pattern = rule["match"]["pattern"]
             matches = re.search(pattern, text)
             match_data["pattern"] = matches
             matched &= matches != None
 
+        if "is_file" in rule["match"]:
+            print("is_file", text)
+
+            if os.path.isfile(text):
+                match_data['is_file'] = text
+                matched &= True
+            else:
+                file_name = self.view.file_name()
+                if (file_name):
+                    cwd = os.path.dirname(file_name)
+                    file_name = os.path.normpath(cwd + "/" + text)
+                    match_data['is_file'] = file_name
+                    matched &= os.path.isfile(file_name)
+
         return (matched, match_data)
+
 
     def generate_command(self, command, text, match_data):
 
@@ -121,7 +137,10 @@ class AcmeGo(AcmeMouse):
             for group,val in match.groupdict().items():
                 command = command.replace("$" + group, val)
 
-        command = command.replace("$_", text)
+        if "is_file" in match_data:
+            command = command.replace("$_", match_data["is_file"])
+        else:
+            command = command.replace("$_", text)
 
         return command
 

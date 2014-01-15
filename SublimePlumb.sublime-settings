@@ -27,6 +27,12 @@
         },
         {
             "match": {
+                "is_file": "True"
+            },
+            "open": "$_"
+        },
+        {
+            "match": {
                 "pattern": "^.",
             },
                 "open": ":/$_"
