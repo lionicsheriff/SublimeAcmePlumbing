@@ -85,6 +85,7 @@ class AcmeGo(AcmeMouse):
         # mandb(8)
         # http://www.google.com
         # pydoc(re)
+        # see pydoc(re)#re.VERBOSE
         # SublimePlumb.sublime-settings
         selection = self.view.substr(self.selection_at_cursor())
         for rule in self.settings.get("rules"):
@@ -146,16 +147,16 @@ class AcmeGo(AcmeMouse):
 
     def open(self, command, text, match_data, edit):
         command = self.generate_command(command, text, match_data)
-        out, err = self.run_command(command, self.CommandTypes.NORMAL)
-
-        if out == None:
-            return
-
-        out = out.decode(encoding='utf-8')
         window = self.view.window()
         if os.path.isfile(command):
             window.open_file(command)
         else:
+            out, err = self.run_command(command, self.CommandTypes.NORMAL)
+
+            if out == None:
+                return
+
+            out = out.decode(encoding='utf-8')
             results = window.new_file()
             results.set_scratch(True)
             results.insert(edit, 0, out)
