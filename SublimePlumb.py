@@ -114,8 +114,7 @@ class AcmeGo(AcmeMouse):
         match_data = {}
 
         if not "disable_goto" in rule["match"]:
-            text = self.extract_jump(text)[0]
-
+            text = self.extract_jump(text)[0] or ""
 
         if "pattern" in rule["match"]:
             pattern = rule["match"]["pattern"]
