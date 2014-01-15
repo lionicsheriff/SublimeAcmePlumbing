@@ -52,6 +52,33 @@ class AcmeMouse(sublime_plugin.TextCommand):
         settings.set("word_separators", old_boundaries)
         return expanded_selection
 
+    
+    class CommandTypes:
+        PIPE = 0
+        SILENT = 1
+        NORMAL = 2
+
+    def run_command(self, command, type):
+        selection = self.get_selection("1")
+
+        if not command or (type == self.CommandTypes.PIPE and len(selection) == 0):
+            return None
+
+        cwd = "~"
+        file_name = self.view.file_name()
+        if (file_name):
+            cwd = os.path.dirname(file_name)
+
+        p = Popen([command], shell=True, stdin=PIPE, stdout=PIPE, cwd=cwd)
+        if type == self.CommandTypes.PIPE:
+            inputRegion = sublime.Region(selection[0]["a"], selection[0]["b"])
+            stdin = self.view.substr(inputRegion)
+            stdin.encode('utf-8')
+            return p.communicate(input=str.encode(stdin))
+        if type == self.CommandTypes.SILENT:
+            return None
+        else :
+            return p.communicate()
 
 class AcmeGo(AcmeMouse):
     def run(self, edit):
@@ -88,23 +115,14 @@ class AcmeGo(AcmeMouse):
 
     def open(self, command, text, match):
         command = self.generate_command(command, text, match)
-        print(command)
 
     def start(self, command, text, match):
         command = self.generate_command(command, text, match)
-        cwd = "~"
-        file_name = self.view.file_name()
-        if (file_name):
-            cwd = os.path.dirname(file_name)
-        Popen([command], shell=True, cwd=cwd, close_fds=True)
+        self.run_command(command, self.CommandTypes.SILENT)
 
 
 
 class AcmeRun(AcmeMouse):
-    class CommandTypes:
-        PIPE = 0
-        SILENT = 1
-        NORMAL = 2
 
     def run(self, edit):
         command = self.selection_at_cursor()
@@ -138,28 +156,6 @@ class AcmeRun(AcmeMouse):
                 return self.CommandTypes.SILENT
 
         return self.CommandTypes.NORMAL
-
-    def run_command(self, command, type):
-        selection = self.get_selection("1")
-
-        if not command or (type == self.CommandTypes.PIPE and len(selection) == 0):
-            return None
-
-        cwd = "~"
-        file_name = self.view.file_name()
-        if (file_name):
-            cwd = os.path.dirname(file_name)
-
-        p = Popen([command], shell=True, stdin=PIPE, stdout=PIPE, cwd=cwd)
-        if type == self.CommandTypes.PIPE:
-            inputRegion = sublime.Region(selection[0]["a"], selection[0]["b"])
-            stdin = self.view.substr(inputRegion)
-            stdin.encode('utf-8')
-            return p.communicate(input=str.encode(stdin))
-        if type == self.CommandTypes.SILENT:
-            return None
-        else :
-            return p.communicate()
 
 
 class AcmeSelect(AcmeMouse):
