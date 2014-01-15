@@ -87,34 +87,46 @@ class AcmeGo(AcmeMouse):
         # pydoc(re)
         selection = self.view.substr(self.selection_at_cursor())
         for rule in self.settings.get("rules"):
-            pattern = rule["match"]
-            print(pattern)
-            print(selection)
-            m = re.search(pattern, selection)
-            if (m):
-                print("matched: ", rule)
+            matched, match_data = self.match_rule(rule, selection)
+
+            print (matched, match_data)
+            if (matched):
                 if "open" in rule:
-                    self.open(rule["open"], selection, m, edit)
+                    self.open(rule["open"], selection, match_data, edit)
 
                 if "start" in rule:
-                    self.start(rule["start"], selection, m)
+                    self.start(rule["start"], selection, match_data)
 
                 break
 
-    def generate_command(self, command, text, match):
-        for idx, val in enumerate(match.groups()):
-            group = idx + 1
-            command = command.replace("$" + str(group), val)
+    def match_rule(self, rule, text):
+        matched = True
+        match_data = {}
+        if "pattern" in rule["match"]:
+            pattern = rule["match"]["pattern"]
+            matches = re.search(pattern, text)
+            match_data["pattern"] = matches
+            matched &= matches != None
 
-        for group,val in match.groupdict().items():
-            command = command.replace("$" + group, val)
+        return (matched, match_data)
+
+    def generate_command(self, command, text, match_data):
+
+        if "pattern" in match_data:
+            match = match_data["pattern"]
+            for idx, val in enumerate(match.groups()):
+                group = idx + 1
+                command = command.replace("$" + str(group), val)
+
+            for group,val in match.groupdict().items():
+                command = command.replace("$" + group, val)
 
         command = command.replace("$_", text)
 
         return command
 
-    def open(self, command, text, match, edit):
-        command = self.generate_command(command, text, match)
+    def open(self, command, text, match_data, edit):
+        command = self.generate_command(command, text, match_data)
         out, err = self.run_command(command, self.CommandTypes.NORMAL)
 
         if out == None:
