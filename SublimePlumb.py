@@ -64,7 +64,7 @@ class AcmeMouse(sublime_plugin.TextCommand):
         if not command or (type == self.CommandTypes.PIPE and len(selection) == 0):
             return None
 
-        cwd = "~"
+        cwd = None
         file_name = self.view.file_name()
         if (file_name):
             cwd = os.path.dirname(file_name)
@@ -94,7 +94,7 @@ class AcmeGo(AcmeMouse):
             if (m):
                 print("matched: ", rule)
                 if "open" in rule:
-                    self.open(rule["open"], selection, m)
+                    self.open(rule["open"], selection, m, edit)
 
                 if "start" in rule:
                     self.start(rule["start"], selection, m)
@@ -113,8 +113,21 @@ class AcmeGo(AcmeMouse):
 
         return command
 
-    def open(self, command, text, match):
+    def open(self, command, text, match, edit):
         command = self.generate_command(command, text, match)
+        out, err = self.run_command(command, self.CommandTypes.NORMAL)
+
+        if out == None:
+            return
+
+        out = out.decode(encoding='utf-8')
+        window = self.view.window()
+        results = window.new_file()
+        results.set_scratch(True)
+        results.insert(edit, 0, out)
+        window.focus_view(results)
+
+
 
     def start(self, command, text, match):
         command = self.generate_command(command, text, match)
