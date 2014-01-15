@@ -1,6 +1,7 @@
 import sublime, sublime_plugin, os
 from sublime import Region
 from subprocess import Popen, PIPE
+import re
 
 pmessage = {
     "src": "sublime-text-3",
@@ -10,33 +11,12 @@ pmessage = {
     "data": "file name"
 }
 
-Plumbing = {
-    "variables": {
-        "protocol": "^(https?|ftp|file|mailto)",
-        "file": "([:.][a−zA−Z0−9_?,%#~&/\−]+)*"
-    },
-    "rules": [
-        {
-        # matches refine the data i.e. the result of prev match
-        # is used if possible. That way you can construct simpler
-        # expressions. They must all match though.
-
-            "matches": [
-                '[a-zA-Z0-9_\-./]+',
-                '([a−zA−Z0−9_\−./]+).(jpe?g|gif|png)'
-            ],
-            "start": "feh $file"
-        },
-        {
-            "matches": [
-                "(?P<page>[a-zA-Z0-9_\-./]+)\((?P<section>[0-9])\)"
-            ],
-            "open": "man -P cat $page $section"
-        }
-    ]
-}
 
 class AcmeMouse(sublime_plugin.TextCommand):
+
+    @property
+    def settings(self):
+        return sublime.load_settings("SublimePlumb.sublime-settings")
 
     def get_selection(self, mouseButton):
         settings = self.view.settings()
@@ -67,7 +47,7 @@ class AcmeMouse(sublime_plugin.TextCommand):
     def expand_selection (self, pos):
         settings = self.view.settings()
         old_boundaries = settings.get("word_separators")
-        settings.set("word_separators"," <>|(){};")
+        settings.set("word_separators"," ")
         expanded_selection = self.view.word(pos)
         settings.set("word_separators", old_boundaries)
         return expanded_selection
@@ -75,7 +55,50 @@ class AcmeMouse(sublime_plugin.TextCommand):
 
 class AcmeGo(AcmeMouse):
     def run(self, edit):
-        pass
+        # mandb(8)
+        # http://www.google.com
+        # pydoc(re)
+        selection = self.view.substr(self.selection_at_cursor())
+        for rule in self.settings.get("rules"):
+            pattern = rule["match"]
+            print(pattern)
+            print(selection)
+            m = re.search(pattern, selection)
+            if (m):
+                print("matched: ", rule)
+                if "open" in rule:
+                    self.open(rule["open"], selection, m)
+
+                if "start" in rule:
+                    self.start(rule["start"], selection, m)
+
+                break
+
+    def generate_command(self, command, text, match):
+        for idx, val in enumerate(match.groups()):
+            group = idx + 1
+            command = command.replace("$" + str(group), val)
+
+        for group,val in match.groupdict().items():
+            command = command.replace("$" + group, val)
+
+        command = command.replace("$_", text)
+
+        return command
+
+    def open(self, command, text, match):
+        command = self.generate_command(command, text, match)
+        print(command)
+
+    def start(self, command, text, match):
+        command = self.generate_command(command, text, match)
+        cwd = "~"
+        file_name = self.view.file_name()
+        if (file_name):
+            cwd = os.path.dirname(file_name)
+        Popen([command], shell=True, cwd=cwd, close_fds=True)
+
+
 
 class AcmeRun(AcmeMouse):
     class CommandTypes:

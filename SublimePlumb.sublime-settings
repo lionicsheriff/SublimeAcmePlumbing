@@ -1,0 +1,24 @@
+{
+    // see pydoc(re):/re.VERBOSE/
+    "rules": [
+        {
+            "match": "^(https?)",
+            "start": "xdg-open $_"
+        },
+        {
+            "match": "([a−zA−Z0−9_\\−./]+).(jpe?g|gif|png)",
+            "start": "xdg-open $_"
+        },
+        {   "match": "pydoc\\((.+?)\\)",
+            "open": "pydoc $1"
+        },
+        {
+            "match": "(?P<page>[a-zA-Z0-9_\\-./]+)\\((?P<section>[0-9]+)\\)",
+            "open": "man -P cat $page $section"
+        },
+        {
+            "match": "^.",
+            "open": ":/$_"
+        }
+    ]
+}
