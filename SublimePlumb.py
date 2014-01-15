@@ -103,7 +103,7 @@ class AcmeGo(AcmeMouse):
                 break
 
     def extract_jump(self, text):
-        m = re.search('(#|@|:)([^#@:]+)$',text)
+        m = re.search('([#@:])([^#@:]+)$',text)
         if m:
             return (text[0: m.span(1)[0]], m.group(1), m.group(2))
         else:
