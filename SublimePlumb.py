@@ -85,24 +85,37 @@ class AcmeGo(AcmeMouse):
         # mandb(8)
         # http://www.google.com
         # pydoc(re)
-        # see pydoc(re)#re.VERBOSE
-        # SublimePlumb.sublime-settings
+        # see pydoc(re)#VERBOSE
+        # see pydoc(re):50
+        # SublimePlumb.sublime-settings:12
+        # SublimePlumb.py@AcmeRun
+        # SublimePlumb.py#run
         selection = self.view.substr(self.selection_at_cursor())
         for rule in self.settings.get("rules"):
             matched, match_data = self.match_rule(rule, selection)
             if (matched):
                 print(rule, matched, match_data)
                 if "open" in rule:
-                    self.open(rule["open"], selection, match_data, edit)
+                    self.open(rule["open"], selection, match_data, edit, rule)
 
                 if "start" in rule:
                     self.start(rule["start"], selection, match_data)
-
                 break
+
+    def extract_jump(self, text):
+        m = re.search('(#|@|:)([^#@:]+)$',text)
+        if m:
+            return (text[0: m.span(1)[0]], m.group(1), m.group(2))
+        else:
+            return (text, None, None)
 
     def match_rule(self, rule, text):
         matched = True
         match_data = {}
+
+        if not "disable_goto" in rule["match"]:
+            text = self.extract_jump(text)[0]
+
 
         if "pattern" in rule["match"]:
             pattern = rule["match"]["pattern"]
@@ -111,7 +124,6 @@ class AcmeGo(AcmeMouse):
             matched &= matches != None
 
         if "is_file" in rule["match"]:
-            print("is_file", text)
 
             if os.path.isfile(text):
                 match_data['is_file'] = text
@@ -145,7 +157,7 @@ class AcmeGo(AcmeMouse):
 
         return command
 
-    def open(self, command, text, match_data, edit):
+    def open(self, command, text, match_data, edit, rule):
         command = self.generate_command(command, text, match_data)
         window = self.view.window()
         if os.path.isfile(command):
@@ -160,9 +172,32 @@ class AcmeGo(AcmeMouse):
             results = window.new_file()
             results.set_scratch(True)
             results.insert(edit, 0, out)
-            window.focus_view(results)
 
+        if not "disable_jump" in rule:
+            view = window.active_view()
+            file, jump_type, position = self.extract_jump(text)
+            if jump_type == ":":
+                print("pos", position)
+                point = view.text_point(int(position), 0)
+                view.sel().clear()
+                view.sel().add(sublime.Region(point))
+                view.show(view.sel()[0])
+            elif jump_type == "@":
+                for r in window.lookup_symbol_in_open_files(position):
+                    if r[0] == view.file_name():
+                        point = view.text_point(r[2][0] - 1, r[2][1] - 1)
+                        view.sel().clear()
+                        view.sel().add(sublime.Region(point))
+                        view.show(point)
+            elif jump_type == "#":
+                sel = view.sel()[0]
+                current_pos = view.sel()[0] if len(sel)> 0 else sublime.Region(0,0)
+                next_pos = view.find(position,current_pos.a)
+                view.sel().clear()
+                view.sel().add(next_pos)
+                view.show(view.sel()[0])
 
+        # SublimePlumb.py@AcmeGo
 
 
     def start(self, command, text, match):
