@@ -90,8 +90,6 @@ def jump(message, args, match_data):
     elif jump_type == ":":
         location = view.text_point(int(jump_location) - 1, 0)
 
-    view.show(location)
     view.sel().clear()
     view.sel().add(Region(location))
-
-
+    view.show(location)

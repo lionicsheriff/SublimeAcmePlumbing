@@ -59,6 +59,16 @@
                 "open_in_tab",
                 "jump"
             ]
+        },
+        // jump to a location in the current file
+        {
+            "match": [
+                ["pattern", "^[@#:]"],
+                "extract_jump"
+            ],
+            "actions": [
+                "jump"
+            ]
         }
     ]
 }
