@@ -1,4 +1,5 @@
 import sublime, os
+from sublime import Region
 from subprocess import Popen, PIPE
 
 def open_in_tab(message, args, match_data):
@@ -52,3 +53,45 @@ def prepare_command(message, args, match_data):
         command = command.replace("$_", data)
 
     message['data'] = command # should this be allowed to alter the message? Maybe an action_data should be passed around too?
+
+
+
+def jump(message, args, match_data):
+    jump_type, jump_location = match_data.get("extract_jump")
+    window = sublime.active_window()
+    view = window.active_view()
+
+    location = 0
+    if jump_type == "@":
+        # jump to symbol
+        for result in window.lookup_symbol_in_open_files(jump_location):
+            if result[0] == view.file_name():
+                location = view.text_point(result[2][0] - 1, result[2][1] - 1)
+                break
+        pass
+    elif jump_type == "#":
+        # jump to search result
+
+        # get the current position, so you can search forwards if the
+        # jump is called on the same page
+        sel = view.sel() 
+        current_pos = view.sel()[0] if len(sel) > 0 else sublime.Region(0,0)
+        next_pos = view.find(jump_location,current_pos.b + 1) # test pass the cursor so it can find the next instance
+
+        # wrap around if nothing is found
+        if next_pos.a == -1:
+            next_pos = view.find(jump_location,1)
+
+        # hopefully we have found something by now
+        if next_pos.a != -1:
+            location = next_pos.a
+
+
+    elif jump_type == ":":
+        location = view.text_point(int(jump_location) - 1, 0)
+
+    view.show(location)
+    view.sel().clear()
+    view.sel().add(Region(location))
+
+

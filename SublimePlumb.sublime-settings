@@ -26,44 +26,39 @@
         // e.g. pydoc(re)
         {
             "match": [
+                "extract_jump",
                ["pattern", "pydoc\\((.+?)\\)"]
             ],
             "actions": [
                ["prepare_command", "pydoc $1"],
-               "open_in_tab"
+               "open_in_tab",
+               "jump"
             ]
        },
        // open man pages in a new tab. The regex matches the format in the "see also" section
        // to allow for easy follow up
        {
             "match": [
+                "extract_jump",
                 ["pattern", "(?P<page>[a-zA-Z0-9_\\-./]+)\\((?P<section>[0-9]+)\\)"]
             ],
             "actions": [
                 ["prepare_command", "man -P cat $page $section"],
-                "open_in_tab"
+                "open_in_tab",
+               "jump"
             ]
         },
         // open files in a new tab
         {
             "match": [
+                "extract_jump",
                 "is_file"
             ],
             "actions": [
                 ["prepare_command", "$_"],
-                "open_in_tab"
-            ]
-        },
-        // open files in a new tab
-        {
-            "match": [
-                "is_file"
-            ],
-            "actions": [
-                ["prepare_command", "$_"],
-                "open_in_tab"
+                "open_in_tab",
+                "jump"
             ]
         }
-        
     ]
 }
