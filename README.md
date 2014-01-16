@@ -83,7 +83,7 @@ These commands are used in the actions pipeline
 
 > see Actions.py@prepare_command
 
-prepare_command replaces text in the data based off the results of the match pipeline. At its most basic $\_ is repaced with the contents of the message data (the text that you clicked on).
+prepare_command replaces text in the data based off the results of the match pipeline. At its most basic $\_ is replaced with the contents of the message data (the text that you clicked on).
 
 #### pattern
 
