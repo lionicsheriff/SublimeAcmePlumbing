@@ -13,9 +13,10 @@ def is_file(message, args):
                 return relative_path
     return None
 
-def pattern(message, pattern):
+def pattern(message, args):
     """ Tests the message data against a regex pattern """
     text = message.get("data", None)
+    pattern = args[0]
     if text != None:
         return re.search(pattern, text)
     return None

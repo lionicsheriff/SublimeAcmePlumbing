@@ -29,7 +29,20 @@ def match_rule(message):
     for rule in all_rules:
         matched = True
         match_data = {}
-        for name,args in rule['match'].items():
+        for definition in rule['match']:
+            # allow plain strings to just call a test without any args
+            # otherwise the first item is the test name and the rest
+            # are the args
+            # mokes the config less verbose
+            name = None
+            args = []
+            if isinstance(definition, str):
+                name = definition
+            else:
+                name = definition[0]
+                args = definition[1:]
+
+            # run the selected test and save its results
             test = get_test(name)
             if test:
                 results = test(message, args)
@@ -105,16 +118,26 @@ def get_module_methods(module_name):
 class SublimePlumb(sublime_plugin.TextCommand):
     """ Run a message through the plumbing """
     def run_(self, edit_token, message):
-    # using run_ instead of run, as run will explode the
-    # message into multiple keyword arguments, and I don't feel like
-    # wrapping it in a dict
+        # using run_ instead of run, as run will explode the
+        # message into multiple keyword arguments, and I don't feel like
+        # wrapping it in a dict
         edit = self.view.begin_edit(edit_token, self.name(), message)
         message["edit_token"] = edit
 
         try:
             rule,match_data = match_rule(message)
             if(rule):
-                for name,args in rule['actions'].items():
+                for definition in rule['actions']:
+                    # like match rules, allow for an action to be declared as a
+                    # plain string if no arguments are desired
+                    name = None
+                    args = []
+                    if isinstance(definition, str):
+                        name = definition
+                    else:
+                        name = definition[0]
+                        args = definition[1:]
+
                     action = get_action(name)
                     if action:
                         action(message, args, match_data)

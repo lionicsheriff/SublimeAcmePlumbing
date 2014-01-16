@@ -27,7 +27,7 @@ def open_in_external_program(message, args, match_data):
 
 def prepare_command(message, args, match_data):
     """ Munges the message data based off results of earlier match data """
-    command = args
+    command = args[0]
 
     # replace group place holders
     # unnamed groups replace $groupnumber with the result
