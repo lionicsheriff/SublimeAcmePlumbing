@@ -1,45 +1,65 @@
 {
-    // see pydoc(re):/re.VERBOSE/
     "rules": [
         {
             "match": {
                 "pattern": "^(https?)"
             },
-            "start": "xdg-open $_"
+            "actions": {
+                "prepare_command": "xdg-open $_",
+                "open_in_external_program": "$command"
+            }
         },
         {
             "match": {
                 "pattern": "([a−zA−Z0−9_\\−./]+).(jpe?g|gif|png)"
             },
-            "start": "xdg-open $_"
+            "actions": {
+                "prepare_command": "xdg-open $_",
+                "open_in_external_program": "$command"
+            }
         },
         {
             "match": {
                "pattern": "pydoc\\((.+?)\\)"
            },
-           "open": "pydoc $1"
+            "actions": {
+               "prepare_command": "pydoc $1",
+               "open_in_tab": "$command"
+            }
            },
        {
             "match": {
                 "pattern": "(?P<page>[a-zA-Z0-9_\\-./]+)\\((?P<section>[0-9]+)\\)"
             },
-            "open": "man -P cat $page $section"
+            "actions": {
+                "prepare_command": "man -P cat $page $section",
+                "open_in_tab": "$command"
+            }
         },
         {
             "match": {
                 "is_file": "True"
             },
-            "open": "$_"
+            "actions": {
+                "prepare_command": "$_",
+                "open_in_tab": "$command"
+            }
         },
         {
             "match": {
                 "pattern": "^$",
             },
-            "open": "$_"
+            "actions": {
+                "prepare_command": "$_",
+                "open_in_tab": "$command"
+            }
         },
         {
-            "match": [],
-            "open": "#$_"
+            "match": {},
+            "actions": {
+                "prepare_command": "$_",
+                "open_in_tab": "$command"
+            }
         }
     ]
 }

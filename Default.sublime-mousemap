@@ -1,17 +1,12 @@
 [
   {
     "button": "button1", "count": 1, "modifiers": [],
-    "command": "acme_select",
+    "command": "sublime_plumb_save_selection",
     "press_command": "drag_select"
   },
   {
     "button": "button2", "count": 1, "modifiers": [],
-    "command": "acme_go",
-    "press_command": "drag_select"
-  },
-  {
-    "button": "button3", "count": 1, "modifiers": [],
-    "command": "acme_run",
+    "command": "sublime_plumb_send",
     "press_command": "drag_select"
   }
 ]
