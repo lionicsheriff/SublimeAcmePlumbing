@@ -1,5 +1,6 @@
 import sublime, sublime_plugin
 import sys, types
+from copy import deepcopy
 
 # variables used to store transient rules, tests, and actions
 # the idea is that other plugins can add to them without affecting
@@ -23,12 +24,17 @@ def get_rules():
     """ Return the current list of rules """
     return _rules + settings().get("rules", [])
 
-def match_rule(message):
+def match_rule(original_message):
     """ Return the first rule that matches the message """
     all_rules= get_rules()
     for rule in all_rules:
         matched = True
         match_data = {}
+
+        # clone the original message so a pipeline can modify the message
+        # without affecting the next rule if it fails
+        message = deepcopy(original_message)
+
         for definition in rule['match']:
             # allow plain strings to just call a test without any args
             # otherwise the first item is the test name and the rest
@@ -52,8 +58,8 @@ def match_rule(message):
                     matched = False
                     break
 
-        if matched: return (rule, match_data)
-    return (None, None)
+        if matched: return (message,rule, match_data)
+    return (message,None, None)
 
 
 def get_tests():
@@ -125,7 +131,7 @@ class SublimePlumb(sublime_plugin.TextCommand):
         message["edit_token"] = edit
 
         try:
-            rule,match_data = match_rule(message)
+            message,rule,match_data = match_rule(message) # NOTE: the message gets mutated in the search pipeline
             if(rule):
                 for definition in rule['actions']:
                     # like match rules, allow for an action to be declared as a
