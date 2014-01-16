@@ -60,6 +60,13 @@ Runs the data against a regular expression specified in the second argument. The
 
 is_file tests if the message data references a file. If it fails, it tries again as a relative path using the current working directory set in the message. The final path is stored in the match\_data to allow subsequent actions access to the full path
 
+### is_dir
+
+> see Tests.py@is_dir
+
+is_dir tests if the message data references a directory. Like is_file, if it fails it tries again as a relative path using the current working directory set in the message. The final path is stored in the match\_data to allow subsequent actions access to the full path.
+
+
 ### extract_jump
 
 > see Tests.py@extract_jump
@@ -82,9 +89,9 @@ prepare_command replaces text in the data based off the results of the match pip
 
 Results from the pattern test can be replaced by either referencing them by their group position (e.g. $1) or by the group name (e.g. $section)
 
-#### is_file
+#### is_file / is_dir
 
-The result of is_file can be accessed with $\_ replacing it with the full path to the file. NOTE: this is instead of the contents of message data.
+The result of is_file and is_dir can be accessed with $\_ replacing it with the full path to the file. NOTE: this is instead of the contents of message data.
 
 ### open\_in\_tab
 

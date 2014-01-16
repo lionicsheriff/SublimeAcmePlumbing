@@ -13,6 +13,19 @@ def is_file(message, args):
                 return relative_path
     return None
 
+def is_dir(message, args):
+    """ Tests if the data in the message is a directory, and returns the full path """
+    file = message.get("data", None)
+    if file:
+        if os.path.isdir(file):
+            return file
+        else:
+            cwd = message["cwd"] # hmm, may need something better than getting the cwd off the file name if I want to chain the out put of ls/dir (since they are transient files, they don't have a cwd)
+            relative_path = os.path.normpath(cwd + '/' + file)
+            if os.path.isfile(relative_path):
+                return relative_path
+    return None
+
 def pattern(message, args):
     """ Tests the message data against a regex pattern """
     text = message.get("data", None)

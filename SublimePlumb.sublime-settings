@@ -60,6 +60,16 @@
                 "jump"
             ]
         },
+        // list directories in a new tab
+        {
+            "match": [
+                "is_dir"
+            ],
+            "actions": [
+                ["prepare_command", "ls -d $_/*"],
+                "open_in_tab",
+            ]
+        },
         // jump to a location in the current file
         {
             "match": [
