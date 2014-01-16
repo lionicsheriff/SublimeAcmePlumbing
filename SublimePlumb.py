@@ -91,7 +91,7 @@ def get_module_methods(module_name):
             __import__(module_name)
         except ImportError:
             if not module_name.startswith("User."):
-                sublime.status_message("Could not load: " + module_name)
+                print("Could not load: " + module_name)
             return {}
 
     module = sys.modules[module_name]
