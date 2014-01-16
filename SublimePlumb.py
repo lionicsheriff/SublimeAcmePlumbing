@@ -53,7 +53,7 @@ def match_rule(message):
                     break
 
         if matched: return (rule, match_data)
-    return None
+    return (None, None)
 
 
 def get_tests():
