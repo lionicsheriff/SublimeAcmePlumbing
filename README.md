@@ -189,7 +189,7 @@ Consider this example:
 
 ```python
 import sublime
-from AcmePlumbing import SublimePlumb
+from SublimeAcmePluming import AcmePlumbing
 
 def always(message, args):
     return True
