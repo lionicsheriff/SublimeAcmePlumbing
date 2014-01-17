@@ -3,7 +3,10 @@
 
 # What
 
-Right click on https://www.google.com/search?q=Acme+Editor opens a google search in your browser. Right click on Actions.py@prepare_command and Actions.py is opened at the definition for prepare_command. Right click on pydoc(re) to see help on python regular expressions. Right click on shutdown and your computer turns off (causing you to wonder why you set up that last one).
++ Right click on https://www.google.com/search?q=Acme+Editor and a google search is opened in your browser.
++ Right click on Actions.py@prepare_command and Actions.py is opened at the definition for prepare_command. 
++ Right click on pydoc(re) to see help on python regular expressions. 
++ Right click on shutdown and your computer turns off (causing you to wonder why you set up that last one).
 
 # Why
 
