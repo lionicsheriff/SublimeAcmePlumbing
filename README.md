@@ -1,5 +1,5 @@
 # SublimePlumb
-> Moke your text clickable
+> Make your text clickable
 
 # What
 
