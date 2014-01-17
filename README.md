@@ -1,13 +1,13 @@
 # SublimePlumb
-> Bringing the plumbing from Acme Editor to Sublime Text 3
+> Moke your text buttons
 
 # What
 
-SublimePlumb binds the right mouse button to a command that can open new files and programs based off the text underneath.
+Right click on https://www.google.com/search?q=Acme+Editor opens a google search in your browser. Right click on Actions.py@prepare_command and Actions.py is opened at the definition for prepare_command. Right click on pydoc(re) to see help on python regular expressions. Right click on shutdown and your computer turns off (causing you to wonder why you set up that last one).
 
 # Why
 
-I played with Acme Editor and wanted to play with something like the plumbing but in an environment that I was more comfortable in (and runs nicely on windows).
+I played with Acme Editor and found the way it considered text to be part of the UI fun. However I wanted to play with it in an environment that I was more comfortable in (and runs nicely on Windows). Besides, I *really* wanted to be able to link files together as an adhoc wiki.
 
 # How
 
