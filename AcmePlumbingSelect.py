@@ -1,4 +1,4 @@
-from AcmePlumbing.Mouse import MouseCommand
+from SublimeAcmePlumbing.Mouse import MouseCommand
 
 class AcmePlumbingSaveSelection(MouseCommand):
     """ Save the last selection for each mouse button """

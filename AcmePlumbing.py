@@ -81,7 +81,7 @@ def match_rule(original_message):
 def get_tests():
     """ Return a dictionary of the current set of tests """
     return dict({}
-       |get_module_methods('AcmePlumbing.Tests').items()
+       |get_module_methods('SublimeAcmePlumbing.Tests').items()
        |_tests.items()
        |get_module_methods('User.AcmePlumbingTests').items()
     )
@@ -101,7 +101,7 @@ def remove_test(name):
 def get_actions():
     """ Return a dictionary of the current set of actions """
     return dict({}
-       |get_module_methods('AcmePlumbing.Actions').items()
+       |get_module_methods('SublimeAcmePlumbing.Actions').items()
        |_actions.items()
        |get_module_methods('User.AcmePlumbingActions').items()
     )
