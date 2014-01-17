@@ -1,0 +1,57 @@
+{
+    "rules": [
+        // open urls in a browser
+        {
+            "match": [
+                ["pattern", "^(https?)"]
+            ],
+            "actions": [
+                ["prepare_command", "cmd /c start $_"],
+                "open_in_external_program"
+            ]
+        },
+        // open images in an image viewer
+        {
+            "match": [
+                ["pattern", "([a−zA−Z0−9_\\−./]+).(jpe?g|gif|png)"]
+            ],
+            "actions": [
+                ["prepare_command", "cmd /c start $_"],
+                "open_in_external_program"
+            ]
+        },
+        // open files in a new tab
+        {
+            "match": [
+                "extract_jump",
+                "is_file"
+            ],
+            "actions": [
+                ["prepare_command", "$_"],
+                "open_in_tab",
+                "jump"
+            ]
+        },
+        // list directories in a new tab
+        // sorta works. Probably want to do the listing in python...
+        {
+            "match": [
+                "is_dir"
+            ],
+            "actions": [
+                ["prepare_command", "cmd /s /c for /F %A in ('dir /b $_') do @echo $_\\%A"],
+                "open_in_tab",
+            ]
+        },
+        // jump to a location in the current file
+        {
+            "match": [
+                ["pattern", "^[@#:]"],
+                "extract_jump"
+            ],
+            "actions": [
+                "jump"
+            ]
+        }
+    ]
+}

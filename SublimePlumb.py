@@ -10,7 +10,16 @@ _tests = {}
 _actions = {}
 
 def settings():
-    return sublime.load_settings('SublimePlumb.sublime-settings')
+    if sys.platform.startswith('linux'):
+        return sublime.load_settings('SublimePlumb (Linux).sublime-settings')
+    elif sys.platform == 'darwin':
+        return sublime.load_settings('SublimePlumb (OSX).sublime-settings')
+    elif sys.platform == 'win32':
+        return sublime.load_settings('SublimePlumb (Windows).sublime-settings')
+    else:
+        # fall back to settings that may work for the system...
+        # most likely something posixy running X?
+        return sublime.load_settings('SublimePlumb (Linux).sublime-settings')
 
 def add_rule(rule):
     """ Add a rule to the base list. This has the lowest priority and does not get saved """
