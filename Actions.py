@@ -7,7 +7,6 @@ def open_in_tab(message, args, match_data):
     cwd = message['cwd']
     command = message['data']
     window = sublime.active_window()
-
     if os.path.isfile(command):
         tab = window.open_file(command)
     else:
@@ -65,7 +64,25 @@ def jump(message, args, match_data):
     if jump_type == "@":
         # jump to symbol
         for result in window.lookup_symbol_in_open_files(jump_location):
-            if result[0] == view.file_name():
+            view_file = view.file_name()
+            result_file = result[0]
+
+            # annoyingly the result format is different than the file name in windows                     
+            if os.name == 'nt':
+                if not result_file.startswith("//"):
+                    # unc paths start with // and they probably only need normalisation
+                    # we need to turn /C/a_file.txt into C:\a_file.txt
+
+                    # drop the leading /
+                    result_file = result_file[1:]
+
+                     # inject : into the second characte (NOTE: it is :\ 'cause the string is growing)
+                    result_file = result_file[:1] + ":\\" + result_file[2:]
+
+                # regardless, we need to flip the slashes
+                result_file = os.path.normpath(result_file)
+
+            if view_file == result_file:
                 location = view.text_point(result[2][0] - 1, result[2][1] - 1)
                 break
         pass
@@ -85,7 +102,6 @@ def jump(message, args, match_data):
         # hopefully we have found something by now
         if next_pos.a != -1:
             location = next_pos.a
-
 
     elif jump_type == ":":
         location = view.text_point(int(jump_location) - 1, 0)
