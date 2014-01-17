@@ -51,12 +51,19 @@ def match_rule(original_message):
             # run the selected test and save its results
             test = get_test(name)
             if test:
-                results = test(message, args)
-                if results:
-                    match_data[name] = results
-                else:
-                    matched = False
-                    break
+                # if a test errors, assume it has failed
+                results = False
+                try:
+                    results = test(message, args)
+                except Exception as e:
+                    # hopefully log it?
+                    print(e)
+                finally:
+                    if results:
+                        match_data[name] = results
+                    else:
+                        matched = False
+                        break
 
         if matched: return (message,rule, match_data)
     return (message,None, None)
