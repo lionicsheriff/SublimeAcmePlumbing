@@ -1,6 +1,6 @@
-from SublimePlumb.Mouse import MouseCommand
+from AcmePlumbing.Mouse import MouseCommand
 
-class SublimePlumbSaveSelection(MouseCommand):
+class AcmePlumbingSaveSelection(MouseCommand):
     """ Save the last selection for each mouse button """
     def run_(self, edit_token, args):
         event = args['event']

@@ -11,15 +11,15 @@ _actions = {}
 
 def settings():
     if sys.platform.startswith('linux'):
-        return sublime.load_settings('SublimePlumb (Linux).sublime-settings')
+        return sublime.load_settings('AcmePlumbing (Linux).sublime-settings')
     elif sys.platform == 'darwin':
-        return sublime.load_settings('SublimePlumb (OSX).sublime-settings')
+        return sublime.load_settings('AcmePlumbing (OSX).sublime-settings')
     elif sys.platform == 'win32':
-        return sublime.load_settings('SublimePlumb (Windows).sublime-settings')
+        return sublime.load_settings('AcmePlumbing (Windows).sublime-settings')
     else:
         # fall back to settings that may work for the system...
         # most likely something posixy running X?
-        return sublime.load_settings('SublimePlumb (Linux).sublime-settings')
+        return sublime.load_settings('AcmePlumbing (Linux).sublime-settings')
 
 def add_rule(rule):
     """ Add a rule to the base list. This has the lowest priority and does not get saved """
@@ -81,9 +81,9 @@ def match_rule(original_message):
 def get_tests():
     """ Return a dictionary of the current set of tests """
     return dict({}
-       |get_module_methods('SublimePlumb.Tests').items()
+       |get_module_methods('AcmePlumbing.Tests').items()
        |_tests.items()
-       |get_module_methods('User.SublimePlumbTests').items()
+       |get_module_methods('User.AcmePlumbingTests').items()
     )
 
 def get_test(name):
@@ -101,9 +101,9 @@ def remove_test(name):
 def get_actions():
     """ Return a dictionary of the current set of actions """
     return dict({}
-       |get_module_methods('SublimePlumb.Actions').items()
+       |get_module_methods('AcmePlumbing.Actions').items()
        |_actions.items()
-       |get_module_methods('User.SublimePlumbActions').items()
+       |get_module_methods('User.AcmePlumbingActions').items()
     )
 
 def get_action(name):
@@ -137,7 +137,7 @@ def get_module_methods(module_name):
 
     return methods
 
-class SublimePlumb(sublime_plugin.TextCommand):
+class AcmePlumbing(sublime_plugin.TextCommand):
     """ Run a message through the plumbing """
     def run_(self, edit_token, message):
         # using run_ instead of run, as run will explode the

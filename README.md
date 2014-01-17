@@ -1,4 +1,4 @@
-# SublimePlumb
+# AcmePlumbing
 > Make your text clickable
 
 # What
@@ -135,7 +135,7 @@ The structure of the message looks like
 
 ## Creating new actions
 
-You can add custom actions by creating them in SublimePlumbActions.py in your user directory. Each action is a function with the signature:
+You can add custom actions by creating them in AcmePlumbingActions.py in your user directory. Each action is a function with the signature:
 
 ```python
 def custom_action(message, arguments, match_data):
@@ -150,7 +150,7 @@ You can then reference them by the function name in your rule set:
 
 ## Creating new tests
 
-Tests are added like new actions. Their file is SublimePlumbTests.py. The signature is
+Tests are added like new actions. Their file is AcmePlumbingTests.py. The signature is
 
 ```python
 def custom_test(message, arguments):
@@ -163,7 +163,7 @@ The return value of your test will be placed in match_data with the same key as 
 
 There is a small api to allow other plugins to inject new rules, actions, and tests. These have higher priority than the default settings, but lower than anything user defined.
 
-They are in the SublimePlumb module:
+They are in the AcmePlumbing module:
 
 These add new plumbing
 
@@ -189,7 +189,7 @@ Consider this example:
 
 ```python
 import sublime
-from SublimePlumb import SublimePlumb
+from AcmePlumbing import SublimePlumb
 
 def always(message, args):
     return True
@@ -202,9 +202,9 @@ def greet(message, args, match_data):
     tab.insert(edit_token, 0, "Hello. How's the weather?")
 
 def plugin_loaded():
-    SublimePlumb.add_test("always", always)
-    SublimePlumb.add_action("greet", greet)
-    SublimePlumb.add_rule({"match":[
+    AcmePlumbing.add_test("always", always)
+    AcmePlumbing.add_action("greet", greet)
+    AcmePlumbing.add_rule({"match":[
                                "always"
                            ],
                            "actions": [

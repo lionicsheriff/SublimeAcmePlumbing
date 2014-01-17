@@ -7,19 +7,19 @@ class MouseCommand(sublime_plugin.TextCommand):
     def get_selection(self, mouseButton):
         """ Return a saved selection for a specified mouse button """
         settings = self.view.settings()
-        key = "SublimePlumb-mouse" + mouseButton
+        key = "AcmePlumbing-mouse" + mouseButton
         return settings.get(key, [])
 
     def save_selection(self, mouseButton, selection):
         """ Save a selection for the specified mouse button """
         settings = self.view.settings()
-        key = "SublimePlumb-mouse" + mouseButton
+        key = "AcmePlumbing-mouse" + mouseButton
         settings.set(key, selection)
 
     def remove_selection(self, mouseButton):
         """ Remove a saved selection """
         settings = self.view.settings()
-        key = "SublimePlumb-mouse" + mouseButton
+        key = "AcmePlumbing-mouse" + mouseButton
         settings.erase(key)
 
     def selection_at_cursor(self):
