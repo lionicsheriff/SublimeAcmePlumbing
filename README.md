@@ -1,5 +1,5 @@
 # SublimePlumb
-> Moke your text buttons
+> Moke your text clickable
 
 # What
 
@@ -124,7 +124,7 @@ The structure of the message looks like
 ```json
 {
   "data": "the selected text",
-  "cwd": "the parent directory of the current file"'
+  "cwd": "the parent directory of the current file"
   "src": "the view id",
   "edit_token": "the edit token used for editing views"
 }
@@ -185,30 +185,28 @@ You can only remove plumbing that was added with the previous add commands.
 Consider this example:
 
 ```python
+import sublime
+from SublimePlumb import SublimePlumb
 
-    import sublime
-    from SublimePlumb import SublimePlumb
+def always(message, args):
+    return True
 
-    def always(message, args):
-        return True
+def greet(message, args, match_data):
+    window = sublime.active_window()
+    tab = window.new_file()
+    tab.set_scratch(True)
+    edit_token = message['edit_token']
+    tab.insert(edit_token, 0, "Hello. How's the weather?")
 
-    def greet(message, args, match_data):
-        window = sublime.active_window()
-        tab = window.new_file()
-        tab.set_scratch(True)
-        edit_token = message['edit_token']
-        tab.insert(edit_token, 0, "Hello. How's the weather?")
-
-    def plugin_loaded():
-        SublimePlumb.add_test("always", always)
-        SublimePlumb.add_action("greet", greet)
-        SublimePlumb.add_rule({"match":[
-                                   "always"
-                               ],
-                               "actions": [
-                                   "greet"
-                                ]})
-
+def plugin_loaded():
+    SublimePlumb.add_test("always", always)
+    SublimePlumb.add_action("greet", greet)
+    SublimePlumb.add_rule({"match":[
+                               "always"
+                           ],
+                           "actions": [
+                               "greet"
+                            ]})
 ```
 
 
