@@ -167,9 +167,6 @@ Consider this example:
 import sublime
 from SublimeAcmePluming import AcmePlumbing
 
-def always(message, args):
-    return True
-
 def greet(message, args, match_data):
     window = sublime.active_window()
     tab = window.new_file()
