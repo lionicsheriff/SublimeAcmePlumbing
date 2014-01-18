@@ -79,7 +79,6 @@ class AcmePlumbing(sublime_plugin.TextCommand):
             for rule in all_rules:
                 matched = True
                 pipeline_data = {}
-                print(rule, pipeline_data)
 
                 # clone the original message so a pipeline can modify the message
                 # without affecting the next rule if it fails
