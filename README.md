@@ -4,7 +4,7 @@
 # What
 
 + Right click on https://www.google.com/search?q=Acme+Editor and a google search is opened in your browser.
-+ Right click on Actions.py@prepare_command and Actions.py is opened at the definition for prepare_command. 
++ Right click on Commands.py@prepare_command and Commands.py is opened at the definition for prepare_command. 
 + Right click on pydoc(re) to see help on python regular expressions. 
 + Right click on shutdown and your computer turns off (causing you to wonder why you set up that last one).
 
@@ -14,77 +14,61 @@ I played with Acme Editor and found the way it considered text to be part of the
 
 # How
 
-The selected text is placed into a message as the data. It is then passed to two pipelines: match, and actions.
+Select text with the rigth mouse button. The selected text is placed into a message as the data and is then passed to a set of commands (a rule). The commands are evaluated from the first to the last, and if one fails the rule stops processing and the next rule is tried.
 
-The match pipeline tests the message to see if it can hand it over to the actions pipeline. It also gathers extra data for the actions pipeline (e.g. is_file gathers the full file name if the data is a relative file).
+If you only want to select a word, you can save effort by just right clicking in the middle of the word. This will cause AcmePlumbing to expand the selection along the word boundaries.
 
-If every command in the match pipeline passes, the message is passed on to the actions pipeline. The actions pipeline runs all the commands.
-
-NOTE: commands in the pipeline are free to modify the message (if the match pipeline fails, the message is set back to the original for the next set of match rules)
 
 # Configuration
 
-> see Default.sublime-settings
+> see AcmePlumbing (Linux).sublime-settings
 
-Rules pairs of match rules and actions, corresponding to each pipeline.
-
-```json
-{"match": [ ], "actions":[ ] }
-```
-
-Each pipeline is a list of commands to run. You can pass extra arguments to each command by wrapping it in a list. The first item is the command name and the remainder are the arguments.
+Each rule is a list of commands to run. You can pass extra arguments to a command by wrapping it in a list.
 
 ```json
-{"match": [ "is_file", [ "pattern", "\.txt$"] ], "actions": [ ] }
+[
+  "is_file",
+  [ "pattern", "\.txt$"],
+  "open_in_tab"
+]
 ```
 
-This rule will match any png file that exists on the disk. Since there are no actions, nothing will happen.
+When a message is passed to this rule, the first commands checks that the message data refers to a file. If it is a file the next command is run, otherwise the rule exits. The second command then checks the message data against a regular expression. This command takes the regular expression as an argument. In this case it tests if the file is a .txt file. If that passes, the message is handed to the open_in_tab command, which opens the file referred to in the message data into a new tab.
 
-```json
-{"match": [ "is_file", [ "pattern", "\.txt$"] ], "actions": [ "open_in_tab" ] }
-```
-Now when the name for a real txt file is right clicked it will be opened in a new tab.
+NOTE: commands in the pipeline are free to modify the message (if the rule fails, the message is set back to the original for the next rule)
 
-The pipelines can modify the message as it passes through the commands. This can be seen in the prepare_command action.
-
-## Tests
-
-These commands can be used in the match pipeline
+## Commands
 
 ### pattern
 
-> see Tests.py@pattern
+> see Commands.py@pattern
 
 Runs the data against a regular expression specified in the second argument. The results are stored in the match\_data allowing the action pipeline to use segments of the data.
 
 ### is_file
 
-> see Tests.py@is_file
+> see Commands.py@is_file
 
 is_file tests if the message data references a file. If it fails, it tries again as a relative path using the current working directory set in the message. The final path is stored in the match\_data to allow subsequent actions access to the full path
 
 ### is_dir
 
-> see Tests.py@is_dir
+> see Commands.py@is_dir
 
 is_dir tests if the message data references a directory. Like is_file, if it fails it tries again as a relative path using the current working directory set in the message. The final path is stored in the match\_data to allow subsequent actions access to the full path.
 
 
 ### extract_jump
 
-> see Tests.py@extract_jump
+> see Commands.py@extract_jump
 
 This test is different as it will always pass. It's purpose is to remove jump locations form the data and store them somewhere separate (match\_data) so they don't interfere with subsequent tests. This is important as keeps stops is_file from having to be aware of how to jump to a location in a file, and it can focus on just testing if a file exists
 
-> see Actions.py@jump for the syntax used to jump
-
-## Actions
-
-These commands are used in the actions pipeline
+> see Commands.py@jump for the syntax used to jump
 
 ### prepare_command
 
-> see Actions.py@prepare_command
+> see Commands.py@prepare_command
 
 prepare_command replaces text in the data based off the results of the match pipeline. At its most basic $\_ is replaced with the contents of the message data (the text that you clicked on).
 
@@ -98,13 +82,13 @@ The result of is_file and is_dir can be accessed with $\_ replacing it with the 
 
 ### open\_in\_tab
 
-> see Actions.py@open\_in\_tab
+> see Commands.py@open\_in\_tab
 
 open\_in\_tab opens whatever is in message['data'] in a new tab. If a file exists with that path it will open that file. Otherwise it will assume that the data is a shell command. It will run the command and if there is output it will be placed in a new tab. An example of this is the rule to open man pages.
 
 ### jump
 
-> see Actions.py@jump
+> see Commands.py@jump
 
 jump uses the results from extract_jump and moves the cursor to a new location. It uses syntax similar to Go To Anything:
 
@@ -114,7 +98,7 @@ jump uses the results from extract_jump and moves the cursor to a new location. 
 
 ### open\_in\_external_process
 
-> see Actions.py@open\_in\_external_process
+> see Commands.py@open\_in\_external_process
 
 open\_in\_external_process assumes that the message data is a command and runs it. No new tabs are opened. This is primarily used for rules like URLs where you want them to open in your browser, not your text editor.
 
@@ -133,31 +117,25 @@ The structure of the message looks like
 }
 ```
 
-## Creating new actions
+## Creating new commands
 
-You can add custom actions by creating them in AcmePlumbingActions.py in your user directory. Each action is a function with the signature:
+You can add custom commands by creating them in AcmePlumbingCommands.py in your user directory. Each action is a function with the signature:
 
 ```python
-def custom_action(message, arguments, match_data):
-    pass
+def custom_command(message, arguments, pipeline_data):
+  return True
 ```
+
+The command must return a true value if it succeeds. Otherwise the rule will be considered failed and the next rule will
+be run.
 
 You can then reference them by the function name in your rule set:
 
 ```json
-{"match": [ ], "actions": [ "custom_action" ]}
+[ "custom_command" ]
 ```
 
-## Creating new tests
-
-Tests are added like new actions. Their file is AcmePlumbingTests.py. The signature is
-
-```python
-def custom_test(message, arguments):
-    pass
-```
-
-The return value of your test will be placed in match_data with the same key as the name of your function. If you return a false value the test will not be considered to be passed and the actions will not run.
+The return value is placed into pipeline_data, a dictionary that contains the results of all the previous commands in the rule.
 
 ## Calling from another plugin
 
@@ -169,17 +147,15 @@ These add new plumbing
 
 ```
 add_rule(rule)
-add_test(name, test)
-add_action(name, action)
+add_command(name, action)
 ```
-add\_test and add\_action take a function as their second argument that should match the signature in the creating new tests/actions sections
+add\_command takes a function as the second argument that should match the signature in the creating new command section. add\_rule takes a list exactly like the settings.
 
 These remove plumbing
 
 ```
 remove_rule(rule)
-remove_test(name)
-remove_action(name)
+remove_command(name)
 ```
 You can only remove plumbing that was added with the previous add commands.
 
@@ -200,16 +176,11 @@ def greet(message, args, match_data):
     tab.set_scratch(True)
     edit_token = message['edit_token']
     tab.insert(edit_token, 0, "Hello. How's the weather?")
+    return tab
 
 def plugin_loaded():
-    AcmePlumbing.add_test("always", always)
     AcmePlumbing.add_action("greet", greet)
-    AcmePlumbing.add_rule({"match":[
-                               "always"
-                           ],
-                           "actions": [
-                               "greet"
-                            ]})
+    AcmePlumbing.add_rule(["greet"])
 ```
 
 
