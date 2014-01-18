@@ -34,11 +34,9 @@ def get_rules():
 
 def get_commands():
     return dict({}
-       |get_module_methods('SublimeAcmePlumbing.Tests').items()
-       |get_module_methods('SublimeAcmePlumbing.Actions').items()
+       |get_module_methods('SublimeAcmePlumbing.Commands').items()
        |_commands.items()
-       |get_module_methods('User.AcmePlumbingTests').items()
-       |get_module_methods('User.AcmePlumbingActions').items()
+       |get_module_methods('User.AcmePlumbingCommands').items()
        )
 
 def get_command(name):
