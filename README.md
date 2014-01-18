@@ -111,7 +111,7 @@ The structure of the message looks like
 ```json
 {
   "data": "the selected text",
-  "cwd": "the parent directory of the current file"
+  "cwd": "the parent directory of the current file",
   "src": "the view id",
   "edit_token": "the edit token used for editing views"
 }
