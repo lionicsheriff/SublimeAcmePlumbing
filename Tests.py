@@ -1,6 +1,6 @@
 import os,re
 
-def is_file(message, args):
+def is_file(message, args, pipeline_data):
     """ Tests if the data in the message is a file, and returns the full path """
     file = message.get("data", None)
     if file:
@@ -13,7 +13,7 @@ def is_file(message, args):
                 return relative_path
     return None
 
-def is_dir(message, args):
+def is_dir(message, args, pipeline_data):
     """ Tests if the data in the message is a directory, and returns the full path """
     file = message.get("data", None)
     if file:
@@ -26,7 +26,7 @@ def is_dir(message, args):
                 return relative_path
     return None
 
-def pattern(message, args):
+def pattern(message, args, pipeline_data):
     """ Tests the message data against a regex pattern """
     text = message.get("data", None)
     pattern = args[0]
@@ -34,7 +34,7 @@ def pattern(message, args):
         return re.search(pattern, text)
     return None
 
-def extract_jump(message, args):
+def extract_jump(message, args, pipeline_data):
     """ 
     Extracts a jump command from the data. Jump commands have the same syntax as Go To Anything
     e.g.:

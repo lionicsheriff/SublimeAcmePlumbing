@@ -2,13 +2,14 @@ import sublime, os
 from sublime import Region
 from subprocess import Popen, PIPE
 
-def open_in_tab(message, args, match_data):
+def open_in_tab(message, args, pipeline_data):
     """ Opens a file, or output of a command in a new tab """
     cwd = message['cwd']
     command = message['data']
     window = sublime.active_window()
     if os.path.isfile(command):
         tab = window.open_file(command)
+        return tab
     else:
         p = Popen([command], shell=True, cwd=cwd, stdout=PIPE, stderr=PIPE)
         out, err = p.communicate()
@@ -18,14 +19,15 @@ def open_in_tab(message, args, match_data):
             tab.set_scratch(True)
             edit_token = message['edit_token']
             tab.insert(edit_token, 0, data)
+            return tab
 
-def open_in_external_program(message, args, match_data):
+def open_in_external_program(message, args, pipeline_data):
     """ Starts an external program to view the message data """
     cwd = message['cwd']
     command = message['data']
-    Popen([command], shell=True, cwd=cwd, close_fds=True)
+    return Popen([command], shell=True, cwd=cwd, close_fds=True)
 
-def prepare_command(message, args, match_data):
+def prepare_command(message, args, pipeline_data):
     """ Munges the message data based off results of earlier match data """
     command = args[0]
 
@@ -34,8 +36,8 @@ def prepare_command(message, args, match_data):
     #   e.g. $1
     # named groups use $groupname
     #   e.g. $file_name
-    if "pattern" in match_data:
-        match = match_data["pattern"]
+    if "pattern" in pipeline_data:
+        match = pipeline_data["pattern"]
         for idx, val in enumerate(match.groups()):
             group = idx + 1 # 0 is the full matched text
             command = command.replace("$" + str(group), val)
@@ -44,19 +46,20 @@ def prepare_command(message, args, match_data):
             command = command.replace("$" + group, val)
 
     # $_ is either the related file, or the original data
-    if "is_file" in match_data:
-        file_name = match_data["is_file"]
+    if "is_file" in pipeline_data:
+        file_name = pipeline_data["is_file"]
         command = command.replace("$_", file_name)
     elif "data" in message:
         data = message["data"]
         command = command.replace("$_", data)
 
     message['data'] = command # should this be allowed to alter the message? Maybe an action_data should be passed around too?
+    return command
 
 
 
-def jump(message, args, match_data):
-    jump_type, jump_location = match_data.get("extract_jump")
+def jump(message, args, pipeline_data):
+    jump_type, jump_location = pipeline_data.get("extract_jump")
     window = sublime.active_window()
     view = window.active_view()
 
@@ -109,3 +112,4 @@ def jump(message, args, match_data):
     view.sel().clear()
     view.sel().add(Region(location))
     view.show(location)
+    return location

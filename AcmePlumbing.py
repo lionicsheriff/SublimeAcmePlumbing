@@ -2,12 +2,11 @@ import sublime, sublime_plugin
 import sys, types
 from copy import deepcopy
 
-# variables used to store transient rules, tests, and actions
+# variables used to store transient rules, and commands
 # the idea is that other plugins can add to them without affecting
 # the base and user defined sets
 _rules = []
-_tests = {}
-_actions = {}
+_commands = {}
 
 def settings():
     if sys.platform.startswith('linux'):
@@ -33,90 +32,21 @@ def get_rules():
     """ Return the current list of rules """
     return _rules + settings().get("rules", [])
 
-def match_rule(original_message):
-    """ Return the first rule that matches the message """
-    all_rules= get_rules()
-    for rule in all_rules:
-        matched = True
-        match_data = {}
-
-        # clone the original message so a pipeline can modify the message
-        # without affecting the next rule if it fails
-        message = deepcopy(original_message)
-
-        for definition in rule['match']:
-            # allow plain strings to just call a test without any args
-            # otherwise the first item is the test name and the rest
-            # are the args
-            # mokes the config less verbose
-            name = None
-            args = []
-            if isinstance(definition, str):
-                name = definition
-            else:
-                name = definition[0]
-                args = definition[1:]
-
-            # run the selected test and save its results
-            test = get_test(name)
-            if test:
-                # if a test errors, assume it has failed
-                results = False
-                try:
-                    results = test(message, args)
-                except Exception as e:
-                    # hopefully log it?
-                    print(e)
-                finally:
-                    if results:
-                        match_data[name] = results
-                    else:
-                        matched = False
-                        break
-
-        if matched: return (message,rule, match_data)
-    return (message,None, None)
-
-
-def get_tests():
-    """ Return a dictionary of the current set of tests """
+def get_commands():
     return dict({}
        |get_module_methods('SublimeAcmePlumbing.Tests').items()
-       |_tests.items()
-       |get_module_methods('User.AcmePlumbingTests').items()
-    )
-
-def get_test(name):
-    """ Return the function associated to the named test """
-    return get_tests().get(name, None)
-
-def add_test(name, test):
-    """ Add an test to the base list. This has the lowest priority and does not get saved """
-    _tests[name] = test
-
-def remove_test(name):
-    """ Remove an test from the base list """
-    del _tests[name]
-
-def get_actions():
-    """ Return a dictionary of the current set of actions """
-    return dict({}
        |get_module_methods('SublimeAcmePlumbing.Actions').items()
-       |_actions.items()
+       |_commands.items()
+       |get_module_methods('User.AcmePlumbingTests').items()
        |get_module_methods('User.AcmePlumbingActions').items()
-    )
+       )
 
-def get_action(name):
-    """ Return the function associated to the named action """
-    return get_actions().get(name, None)
+def get_command(name):
+    return get_commands().get(name, None)
 
-def add_action(name, action):
-    """ Add an action to the base list. This has the lowest priority and does not get saved """
-    _actions[name] = action
-
-def remove_action(name):
+def remove_command(name):
     """ Remove an action from the base list """
-    del _actions[name]
+    del _command[name]
 
 
 def get_module_methods(module_name):
@@ -139,19 +69,29 @@ def get_module_methods(module_name):
 
 class AcmePlumbing(sublime_plugin.TextCommand):
     """ Run a message through the plumbing """
-    def run_(self, edit_token, message):
+    def run_(self, edit_token, original_message):
         # using run_ instead of run, as run will explode the
         # message into multiple keyword arguments, and I don't feel like
         # wrapping it in a dict
-        edit = self.view.begin_edit(edit_token, self.name(), message)
-        message["edit_token"] = edit
+        edit = self.view.begin_edit(edit_token, self.name(), original_message)
+        original_message["edit_token"] = edit
 
         try:
-            message,rule,match_data = match_rule(message) # NOTE: the message gets mutated in the search pipeline
-            if(rule):
-                for definition in rule['actions']:
-                    # like match rules, allow for an action to be declared as a
-                    # plain string if no arguments are desired
+            all_rules= get_rules()
+            for rule in all_rules:
+                matched = True
+                pipeline_data = {}
+                print(rule, pipeline_data)
+
+                # clone the original message so a pipeline can modify the message
+                # without affecting the next rule if it fails
+                message = deepcopy(original_message)
+
+                for definition in rule:
+                    # allow plain strings to just call a command without any args
+                    # otherwise the first item is the command name
+                    # and the rest are the args
+                    # mokes the config less verbose
                     name = None
                     args = []
                     if isinstance(definition, str):
@@ -160,8 +100,23 @@ class AcmePlumbing(sublime_plugin.TextCommand):
                         name = definition[0]
                         args = definition[1:]
 
-                    action = get_action(name)
-                    if action:
-                        action(message, args, match_data)
+                    # run the selected test and save its results
+                    command = get_command(name)
+                    if command:
+                        # if a test errors, assume it has failed
+                        results = False
+                        try:
+                            results = command(message, args, pipeline_data)
+                        except Exception as e:
+                            # hopefully log it?
+                            print(e)
+                        finally:
+                            if results:
+                                pipeline_data[name] = results
+                            else:
+                                matched = False
+                                break
+
+                if matched: break
         finally:
             self.view.end_edit(edit)
