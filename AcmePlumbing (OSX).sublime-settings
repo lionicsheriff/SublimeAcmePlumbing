@@ -1,84 +1,56 @@
 {
     "rules": [
         // open urls in a browser
-        {
-            "match": [
-                ["pattern", "^(https?)"]
-            ],
-            "actions": [
-                ["prepare_command", "open $_"],
-                "open_in_external_program"
-            ]
-        },
+        [
+            ["pattern", "^(https?)"],
+            ["prepare_command", "open $_"],
+            "open_in_external_program"
+        ],
         // open images in an image viewer
-        {
-            "match": [
-                ["pattern", "([a−zA−Z0−9_\\−./]+).(jpe?g|gif|png)"]
-            ],
-            "actions": [
-                ["prepare_command", "open $_"],
-                "open_in_external_program"
-            ]
-        },
+        [
+            ["pattern", "([a−zA−Z0−9_\\−./]+).(jpe?g|gif|png)"],
+            ["prepare_command", "open $_"],
+            "open_in_external_program"
+        ],
         // open pydoc results in a new tab.
         // since the single click stops on whitespace, I have put the page name in
         // parenthesis like man pages
         // e.g. pydoc(re)
-        {
-            "match": [
-                "extract_jump",
-               ["pattern", "pydoc\\((.+?)\\)"]
-            ],
-            "actions": [
-               ["prepare_command", "pydoc $1"],
-               "open_in_tab",
-               "jump"
-            ]
-       },
-       // open man pages in a new tab. The regex matches the format in the "see also" section
-       // to allow for easy follow up
-       {
-            "match": [
-                "extract_jump",
-                ["pattern", "(?P<page>[a-zA-Z0-9_\\-./]+)\\((?P<section>[0-9]+)\\)"]
-            ],
-            "actions": [
-                ["prepare_command", "man -P cat $page $section"],
-                "open_in_tab",
-               "jump"
-            ]
-        },
+        [
+            "extract_jump",
+            ["pattern", "pydoc\\((.+?)\\)"],
+            ["prepare_command", "pydoc $1"],
+            "open_in_tab",
+            "jump"
+        ],
+        // open man pages in a new tab. The regex matches the format in the "see also" section
+        // to allow for easy follow up
+        [
+            "extract_jump",
+            ["pattern", "(?P<page>[a-zA-Z0-9_\\-./]+)\\((?P<section>[0-9]+)\\)"],
+            ["prepare_command", "man -P cat $page $section"],
+            "open_in_tab",
+           "jump"
+        ],
         // open files in a new tab
-        {
-            "match": [
-                "extract_jump",
-                "is_file"
-            ],
-            "actions": [
-                ["prepare_command", "$_"],
-                "open_in_tab",
-                "jump"
-            ]
-        },
+        [
+            "extract_jump",
+            "is_file",
+            ["prepare_command", "$_"],
+            "open_in_tab",
+            "jump"
+        ],
         // list directories in a new tab
-        {
-            "match": [
-                "is_dir"
-            ],
-            "actions": [
-                ["prepare_command", "ls -d $_/*"],
-                "open_in_tab",
-            ]
-        },
+        [
+            "is_dir",
+            ["prepare_command", "ls -d $_/*"],
+            "open_in_tab",
+        ],
         // jump to a location in the current file
-        {
-            "match": [
-                ["pattern", "^[@#:]"],
-                "extract_jump"
-            ],
-            "actions": [
-                "jump"
-            ]
-        }
+        [
+            ["pattern", "^[@#:]"],
+            "extract_jump",
+            "jump"
+        ]
     ]
 }
