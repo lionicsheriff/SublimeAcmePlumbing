@@ -179,3 +179,10 @@ def extern(message, args, pipeline_data):
         return command(message, args[2:], pipeline_data)
     else:
         return None
+
+def print_pipeline(message, args, pipeline_data):
+    """ Displays the current state of the pipeline in the console """
+    print("Message: ", message)
+    print("Args: ", args)
+    print("Data", pipeline_data)
+    return True
