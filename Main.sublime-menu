@@ -1,0 +1,62 @@
+[
+  {
+    "caption": "Preferences",
+    "mnemonic": "n",
+    "id": "preferences",
+    "children": [
+      {
+        "caption": "Package Settings",
+        "mnemonic": "P",
+        "id": "package-settings",
+        "children": [
+          { 
+            "caption": "AcmePlumbing",
+            "children": [
+              {
+                "command": "open_file",
+                "args": {"file": "${packages}/SublimeAcmePlumbing/AcmePlumbing (Linux).sublime-settings"},
+                "caption": "Settings – Default",
+                "platform": "Linux"
+              },
+              {
+                "command": "open_file",
+                "args": {"file": "${packages}/SublimeAcmePlumbing/AcmePlumbing (Windows).sublime-settings"},
+                "caption": "Settings – Default",
+                "platform": "Windows"
+              },
+              {
+                "command": "open_file",
+                "args": {"file": "${packages}/SublimeAcmePlumbing/AcmePlumbing (OSX).sublime-settings"},
+                "caption": "Settings – Default",
+                "platform": "OSX"
+              },
+              {
+                "command": "open_file",
+                "args": {"file": "${packages}/User/AcmePlumbing (Linux).sublime-settings"},
+                "caption": "Settings – User",
+                "platform": "Linux"
+              },
+              {
+                "command": "open_file",
+                "args": {"file": "${packages}/User/AcmePlumbing (Windows).sublime-settings"},
+                "caption": "Settings – User",
+                "platform": "Windows"
+              },
+              {
+                "command": "open_file",
+                "args": {"file": "${packages}/User/AcmePlumbing (OSX).sublime-settings"},
+                "caption": "Settings – User",
+                "platform": "OSX"
+              },
+              {
+                "command": "open_file",
+                "args": {"file": "${packages}/User/AcmePlumbingCommands.py"},
+                "caption": "Commands – User",
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
