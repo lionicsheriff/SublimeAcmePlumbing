@@ -36,29 +36,6 @@ def pattern(message, args, pipeline_data):
         return re.search(pattern, text)
     return None
 
-def extract_jump(message, args, pipeline_data):
-    """ 
-    Extracts a jump command from the data, and proceeds to the next step.
-    Jump commands have the same syntax as Go To Anything
-    e.g.:
-        @ to jump to a symbol
-        : to jump to a line
-        # to jump to an instance of the text
-
-    NOTE: the jump command is removed from the data. This is useful for subsequent tests like
-          is_file, as otherwise the jump command will cause it to fail
-
-    Returns a tuple containing (type, location)
-    """
-
-    text = message.get("data", None)
-    if text != None:
-        match = re.search("([@#:])([^@#:]+?)$", text)
-        if match:
-            message['data'] = text[0:match.span(1)[0]]
-            return (match.group(1), match.group(2))
-    return (None,None) # this will be considered as true
-
 def open_in_tab(message, args, pipeline_data):
     """ Opens a file, or output of a command in a new tab """
     cwd = message['cwd']
@@ -113,9 +90,31 @@ def prepare_command(message, args, pipeline_data):
     message['data'] = command # should this be allowed to alter the message? Maybe an action_data should be passed around too?
     return command
 
+def extract_jump(message, args, pipeline_data):
+    """ 
+    Extracts a jump command from the data, and proceeds to the next step.
+    Jump commands have the same syntax as Go To Anything
+    e.g.:
+        @ to jump to a symbol
+        : to jump to a line
+        # to jump to an instance of the text
 
+    NOTE: the jump command is removed from the data. This is useful for subsequent tests like
+          is_file, as otherwise the jump command will cause it to fail
+
+    Returns a tuple containing (type, location)
+    """
+
+    text = message.get("data", None)
+    if text != None:
+        match = re.search("([@#:])([^@#:]+?)$", text)
+        if match:
+            message['data'] = text[0:match.span(1)[0]]
+            return (match.group(1), match.group(2))
+    return (None,None) # this will be considered as true
 
 def jump(message, args, pipeline_data):
+    """ Jump to a symbol, line, or search result. Uses the results of extract_jump """
     jump_type, jump_location = pipeline_data.get("extract_jump")
     window = sublime.active_window()
     view = window.active_view()
