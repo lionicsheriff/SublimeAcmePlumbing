@@ -162,7 +162,7 @@ def greet(message, args, match_data):
     edit_token = message['edit_token']
     tab.insert(edit_token, 0, "Hello. How's the weather?")
     return tab
-``
+```
 
 #### OtherPlugin.Plugin.py
 ```python
