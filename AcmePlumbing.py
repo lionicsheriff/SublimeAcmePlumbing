@@ -6,7 +6,6 @@ from copy import deepcopy
 # the idea is that other plugins can add to them without affecting
 # the base and user defined sets
 _rules = []
-_commands = {}
 
 def settings():
     if sys.platform.startswith('linux'):
@@ -35,17 +34,11 @@ def get_rules():
 def get_commands():
     return dict({}
        |get_module_methods('SublimeAcmePlumbing.Commands').items()
-       |_commands.items()
        |get_module_methods('User.AcmePlumbingCommands').items()
        )
 
 def get_command(name):
     return get_commands().get(name, None)
-
-def remove_command(name):
-    """ Remove an action from the base list """
-    del _command[name]
-
 
 def get_module_methods(module_name):
     """ Return a dictionary of all module level functions"""

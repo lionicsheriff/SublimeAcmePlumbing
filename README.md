@@ -102,6 +102,16 @@ jump uses the results from extract_jump and moves the cursor to a new location. 
 
 open\_in\_external_process assumes that the message data is a command and runs it. No new tabs are opened. This is primarily used for rules like URLs where you want them to open in your browser, not your text editor.
 
+### extern
+
+> see Commands.py@extern
+
+extern runs a command defined in an external module. The first argument is the module name, the second in the function, and the remainder are the arguments.
+
+```json
+["extern", "ExternalPlugin.Module", "custom_command", "arg1", "arg2", "arg3"]
+```
+
 # Extending
 
 ## Message
@@ -139,34 +149,12 @@ The return value is placed into pipeline_data, a dictionary that contains the re
 
 ## Calling from another plugin
 
-There is a small api to allow other plugins to inject new rules, actions, and tests. These have higher priority than the default settings, but lower than anything user defined.
+You can use SublimeAcmePlumbing.AcmePlumbing.add_rule ( AcmePlumbing.py@add_rule ) to inject a rule into the plumbing. This can be combined with the "extern" command to call a command defined in another module (e.g. another plugin).
 
-They are in the AcmePlumbing module:
+### Example
 
-These add new plumbing
-
-```
-add_rule(rule)
-add_command(name, action)
-```
-add\_command takes a function as the second argument that should match the signature in the creating new command section. add\_rule takes a list exactly like the settings.
-
-These remove plumbing
-
-```
-remove_rule(rule)
-remove_command(name)
-```
-You can only remove plumbing that was added with the previous add commands.
-
-
-
-Consider this example:
-
+#### OtherPlugin.Commands.py
 ```python
-import sublime
-from SublimeAcmePluming import AcmePlumbing
-
 def greet(message, args, match_data):
     window = sublime.active_window()
     tab = window.new_file()
@@ -174,10 +162,15 @@ def greet(message, args, match_data):
     edit_token = message['edit_token']
     tab.insert(edit_token, 0, "Hello. How's the weather?")
     return tab
+``
+
+#### OtherPlugin.Plugin.py
+```python
+import sublime
+from SublimeAcmePluming import AcmePlumbing
 
 def plugin_loaded():
-    AcmePlumbing.add_action("greet", greet)
-    AcmePlumbing.add_rule(["greet"])
+    AcmePlumbing.add_rule(["extern", "OtherPlugin.Commands", "greet"])
 ```
 
 

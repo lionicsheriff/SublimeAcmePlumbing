@@ -1,4 +1,4 @@
-import sublime, os, re
+import sublime, os, re, importlib
 from sublime import Region
 from subprocess import Popen, PIPE
 
@@ -169,3 +169,13 @@ def jump(message, args, pipeline_data):
     view.sel().add(Region(location))
     view.show(location)
     return location
+
+def extern(message, args, pipeline_data):
+    """ Run a command from an external module """
+    module_name, function_name = args[:2]
+    module = importlib.import_module(module_name)
+    command = module.__dict__.get(function_name, None)
+    if command:
+        return command(message, args[2:], pipeline_data)
+    else:
+        return None
