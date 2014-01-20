@@ -186,3 +186,9 @@ def print_pipeline(message, args, pipeline_data):
     print("Args: ", args)
     print("Data", pipeline_data)
     return True
+
+def strip(message, args, pipeline_data):
+    """ Strips characters from the start and end of the data if they exist """
+    chars = args[0]
+    message['data'] = message['data'].strip(chars)
+    return chars # give visiblity to the characters stripped (maybe return args?)
