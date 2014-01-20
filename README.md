@@ -149,12 +149,31 @@ The return value is placed into pipeline_data, a dictionary that contains the re
 
 ## Calling from another plugin
 
-You can use SublimeAcmePlumbing.AcmePlumbing.add_rule ( AcmePlumbing.py@add_rule ) to inject a rule into the plumbing. This can be combined with the "extern" command to call a command defined in another module (e.g. another plugin).
+You can use SublimeAcmePlumbing.AcmePlumbing.add_rule ( AcmePlumbing.py@add_rule ) to inject a rule into the plumbing. This can be combined with the "extern" command to call a command defined in another module (e.g. another plugin). The rule is saved in the *user* settings to allow the user to tweak it and control its position in the plumbing. Additional rules have a key to allow the rule to be updated if it already exists, as such they should be unique.
+
+> see AcmePlumbing.py@add_rule
+
+```python
+def add_rule(key, comment, rule)
+```
+
+The rule is saved in this format:
+
+```javascript
+// key
+// comment
+[
+    "rule"
+],
+```
 
 ### Example
 
-#### OtherPlugin.Commands.py
+#### OtherPlugin.Plumbing.py
 ```python
+import sublime
+from SublimeAcmePluming import AcmePlumbing
+
 def greet(message, args, match_data):
     window = sublime.active_window()
     tab = window.new_file()
@@ -162,16 +181,9 @@ def greet(message, args, match_data):
     edit_token = message['edit_token']
     tab.insert(edit_token, 0, "Hello. How's the weather?")
     return tab
-```
-
-#### OtherPlugin.Plugin.py
-```python
-import sublime
-from SublimeAcmePluming import AcmePlumbing
 
 def plugin_loaded():
-    AcmePlumbing.add_rule(["extern", "OtherPlugin.Commands", "greet"])
+    AcmePlumbing.add_rule("OtherPlugin.greet", "Ask about the weather",["extern", "OtherPlugin.Plumbing", "greet"])
 ```
-
 
 This plugin sets up the plumbing so that anything you right click on will open a new tab asking you about the the weather
