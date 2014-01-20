@@ -8,16 +8,19 @@ from copy import deepcopy
 _rules = []
 
 def settings():
+    return sublime.load_settings(settings_file_name())
+
+def settings_file_name():
     if sys.platform.startswith('linux'):
-        return sublime.load_settings('AcmePlumbing (Linux).sublime-settings')
+        return 'AcmePlumbing (Linux).sublime-settings'
     elif sys.platform == 'darwin':
-        return sublime.load_settings('AcmePlumbing (OSX).sublime-settings')
+        return 'AcmePlumbing (OSX).sublime-settings'
     elif sys.platform == 'win32':
-        return sublime.load_settings('AcmePlumbing (Windows).sublime-settings')
+        return 'AcmePlumbing (Windows).sublime-settings'
     else:
         # fall back to settings that may work for the system...
         # most likely something posixy running X?
-        return sublime.load_settings('AcmePlumbing (Linux).sublime-settings')
+        return 'AcmePlumbing (Linux).sublime-settings'
 
 def add_rule(rule):
     """ Add a rule to the base list. This has the lowest priority and does not get saved """
