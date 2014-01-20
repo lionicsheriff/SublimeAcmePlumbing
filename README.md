@@ -149,7 +149,7 @@ The return value is placed into pipeline_data, a dictionary that contains the re
 
 ## Calling from another plugin
 
-You can use SublimeAcmePlumbing.AcmePlumbing.add_rule ( AcmePlumbing.py@add_rule ) to inject a rule into the plumbing. This can be combined with the "extern" command to call a command defined in another module (e.g. another plugin). The rule is saved in the *user* settings to allow the user to tweak it and control its position in the plumbing. Additional rules have a key to allow the rule to be updated if it already exists, as such they should be unique.
+You can use SublimeAcmePlumbing.AcmePlumbing.add_rule (AcmePlumbing.py@add_rule) to inject a rule into the plumbing. This can be combined with the "extern" command to call a command defined in another module (e.g. another plugin). The rule is saved in the *user* settings to allow the user to tweak it and control its position in the plumbing. Additional rules have a key to allow the rule to be updated if it already exists, as such they should be unique.
 
 > see AcmePlumbing.py@add_rule
 
