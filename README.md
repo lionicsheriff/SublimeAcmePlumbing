@@ -183,7 +183,9 @@ def greet(message, args, match_data):
     return tab
 
 def plugin_loaded():
-    AcmePlumbing.add_rule("OtherPlugin.greet", "Ask about the weather",["extern", "OtherPlugin.Plumbing", "greet"])
+    AcmePlumbing.add_rule("OtherPlugin.greet",
+                          "Ask about the weather",
+                          ["extern", "OtherPlugin.Plumbing", "greet"])
 ```
 
 This plugin sets up the plumbing so that anything you right click on will open a new tab asking you about the the weather
