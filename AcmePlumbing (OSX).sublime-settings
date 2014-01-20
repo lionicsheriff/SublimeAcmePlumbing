@@ -34,6 +34,7 @@
         ],
         // open files in a new tab
         [
+            ["strip", "()"],
             "extract_jump",
             "is_file",
             ["prepare_command", "$_"],
