@@ -3,28 +3,32 @@ from sublime import Region
 from subprocess import Popen, PIPE
 
 def is_file(message, args, pipeline_data):
-    """ Tests if the data in the message is a file, and returns the full path """
+    """ Tests if the data in the message is a file, and sets it to the full path """
     file = message.get("data", None)
     if file:
         cwd = message["cwd"]
         if os.path.isfile(file):
+            message['data'] = file
             return file
         elif cwd:
             relative_path = os.path.normpath(cwd + '/' + file)
             if os.path.isfile(relative_path):
+                message['data'] = relative_path
                 return relative_path
     return None
 
 def is_dir(message, args, pipeline_data):
-    """ Tests if the data in the message is a directory, and returns the full path """
+    """ Tests if the data in the message is a directory, and sets it to the full path """
     file = message.get("data", None)
     if file:
         cwd = message["cwd"] # hmm, may need something better than getting the cwd off the file name if I want to chain the out put of ls/dir (since they are transient files, they don't have a cwd)
         if os.path.isdir(file):
             return file
+            message['data'] = file
         elif cwd:
             relative_path = os.path.normpath(cwd + '/' + file)
             if os.path.isfile(relative_path):
+                message['data'] = relative_path
                 return relative_path
     return None
 
@@ -79,15 +83,11 @@ def prepare_command(message, args, pipeline_data):
         for group,val in match.groupdict().items():
             command = command.replace("$" + group, val)
 
-    # $_ is either the related file, or the original data
-    if "is_file" in pipeline_data:
-        file_name = pipeline_data["is_file"]
-        command = command.replace("$_", file_name)
-    elif "data" in message:
-        data = message["data"]
-        command = command.replace("$_", data)
+    # $_ is replaced with the message data
+    command = command.replace("$_", message['data'])
 
-    message['data'] = command # should this be allowed to alter the message? Maybe an action_data should be passed around too?
+    # set the data to the expanded version
+    message['data'] = command
     return command
 
 def extract_jump(message, args, pipeline_data):
@@ -183,7 +183,6 @@ def extern(message, args, pipeline_data):
 def print_pipeline(message, args, pipeline_data):
     """ Displays the current state of the pipeline in the console """
     print("Message: ", message)
-    print("Args: ", args)
     print("Data", pipeline_data)
     return True
 

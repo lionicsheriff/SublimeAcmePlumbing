@@ -49,13 +49,13 @@ Runs the data against a regular expression specified in the second argument. The
 
 > see Commands.py@is_file
 
-is_file tests if the message data references a file. If it fails, it tries again as a relative path using the current working directory set in the message. The final path is stored in the match\_data to allow subsequent actions access to the full path
+is_file tests if the message data references a file. If it fails, it tries again as a relative path using the current working directory set in the message. If a file is found, the message data is set to the full path.
 
 ### is_dir
 
 > see Commands.py@is_dir
 
-is_dir tests if the message data references a directory. Like is_file, if it fails it tries again as a relative path using the current working directory set in the message. The final path is stored in the match\_data to allow subsequent actions access to the full path.
+is_dir tests if the message data references a directory. Like is_file, if it fails it tries again as a relative path using the current working directory set in the message. If a directory is found, the message data is set to the full path.
 
 
 ### extract_jump
