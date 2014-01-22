@@ -98,15 +98,9 @@ def add_rule(key, comment, rule):
     # TODO: highlight the new rule
     sublime.active_window().open_file(user_settings)
 
-
-
-def remove_rule(rule):
-    """ Remove a rule from the base list """
-    _rules.remove(rule)
-
 def get_rules():
     """ Return the current list of rules """
-    return _rules + settings().get("rules", [])
+    return settings().get("rules", [])
 
 def get_commands():
     return dict({}
