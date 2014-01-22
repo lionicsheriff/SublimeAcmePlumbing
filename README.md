@@ -112,6 +112,12 @@ extern runs a command defined in an external module. The first argument is the m
 ["extern", "ExternalPlugin.Module", "custom_command", "arg1", "arg2", "arg3"]
 ```
 
+### print_pipeline
+
+> see Commands.py@print_pipeline
+
+print_pipeline outputs the message and pipeline data at that point in the pipeline into the console. It is useful when debugging a pipeline.
+
 # Extending
 
 ## Message
