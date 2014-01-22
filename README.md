@@ -76,10 +76,6 @@ prepare_command replaces text in the data based off the results of the match pip
 
 Results from the pattern test can be replaced by either referencing them by their group position (e.g. $1) or by the group name (e.g. $section)
 
-#### is_file / is_dir
-
-The result of is_file and is_dir can be accessed with $\_ replacing it with the full path to the file. NOTE: this is instead of the contents of message data.
-
 ### open\_in\_tab
 
 > see Commands.py@open\_in\_tab
