@@ -42,17 +42,9 @@ class MouseCommand(sublime_plugin.TextCommand):
 
         selection = self.view.sel()[0]
         if selection.b - selection.a == 0:
-
-            saved = [s for s in self.get_selection("1")
-                        if s["a"] <= selection.a
-                        and s["b"] >= selection.b]
-
-            if len(saved) > 0:
-                selection = Region(saved[0]["a"], saved[0]["b"])
-            else:
-                selection = self.expand_selection(selection)
-
-        return selection
+                return self.expand_selection(selection)
+        else:
+            return selection
 
 
     def expand_selection (self, pos):
