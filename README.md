@@ -190,4 +190,4 @@ def plugin_loaded():
                           ["extern", "OtherPlugin.Plumbing", "greet"])
 ```
 
-This plugin sets up the plumbing so that anything you right click on will open a new tab asking you about the the weather
+This plugin sets up the plumbing so that anything you right click on will open a new tab asking you about the weather
