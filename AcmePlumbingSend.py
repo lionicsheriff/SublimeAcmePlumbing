@@ -1,6 +1,6 @@
 import sublime, sublime_plugin
 import os
-from SublimeAcmePlumbing.Mouse import MouseCommand
+from .Mouse import MouseCommand
 
 class AcmePlumbingSend(MouseCommand):
     """ Sends the current selected text to the plumbing """
