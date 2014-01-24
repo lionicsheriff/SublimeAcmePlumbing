@@ -191,3 +191,29 @@ def plugin_loaded():
 ```
 
 This plugin sets up the plumbing so that anything you right click on will open a new tab asking you about the weather
+
+# FAQ
+
+## Where is my context menu?
+
+Since Acme Plumbing binds itself to the right mouse button, you can't access the right click menu normally. To access it you can double click your right mouse button instead.
+
+However, if you don't want Acme Plumbing on your right mouse button, you can move it to the middle mouse button by putting this into Default.sublime-mousemap in the Users package directory.
+
+```json
+[
+  {
+    "button": "button2", "count": 1, "modifiers": [],
+    "press_command": "context_menu"
+  },
+  {
+    "button": "button3", "count": 1, "modifiers": [],
+    "command": "acme_plumbing_send",
+    "press_command": "drag_select"
+  },
+]
+```
+
+# License
+
+MIT
