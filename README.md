@@ -14,7 +14,7 @@ I played with Acme Editor and found the way it considered text to be part of the
 
 # How
 
-Select text with the rigth mouse button. The selected text is placed into a message as the data and is then passed to a set of commands (a rule). The commands are evaluated from the first to the last, and if one fails the rule stops processing and the next rule is tried.
+Select text with the right mouse button. The selected text is placed into a message as the data and is then passed to a set of commands (a rule). The commands are evaluated from the first to the last, and if one fails the rule stops processing and the next rule is tried.
 
 If you only want to select a word, you can save effort by just right clicking in the middle of the word. This will cause AcmePlumbing to expand the selection along the word boundaries.
 
