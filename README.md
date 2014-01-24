@@ -1,25 +1,30 @@
 # AcmePlumbing
 > Make your text clickable
 
-# What
++ [Configuration](#configuration)
++ [Extending](#extending)
++ [FAQ](#faq)
+  + [Where is my context menu](#context-menu)
+
+# <a name="what"></a> What
 
 + Right click on https://www.google.com/search?q=Acme+Editor and a google search is opened in your browser.
 + Right click on Commands.py@prepare_command and Commands.py is opened at the definition for prepare_command. 
 + Right click on pydoc(re) to see help on python regular expressions. 
 + Right click on shutdown and your computer turns off (causing you to wonder why you set up that last one).
 
-# Why
+# <a name="why"></a> Why
 
 I played with Acme Editor and found the way it considered text to be part of the UI fun. However I wanted to play with it in an environment that I was more comfortable in (and runs nicely on Windows). Besides, I *really* wanted to be able to link files together as an adhoc wiki.
 
-# How
+# <a name="how"></a> How
 
 Select text with the right mouse button. The selected text is placed into a message as the data and is then passed to a set of commands (a rule). The commands are evaluated from the first to the last, and if one fails the rule stops processing and the next rule is tried.
 
 If you only want to select a word, you can save effort by just right clicking in the middle of the word. This will cause AcmePlumbing to expand the selection along the word boundaries.
 
 
-# Configuration
+# <a name="configuration"></a> Configuration
 
 > see AcmePlumbing (Linux).sublime-settings
 
@@ -114,7 +119,7 @@ extern runs a command defined in an external module. The first argument is the m
 
 print_pipeline outputs the message and pipeline data at that point in the pipeline into the console. It is useful when debugging a pipeline.
 
-# Extending
+# <a name="extending"></a> Extending
 
 ## Message
 
@@ -192,9 +197,9 @@ def plugin_loaded():
 
 This plugin sets up the plumbing so that anything you right click on will open a new tab asking you about the weather
 
-# FAQ
+# <a name="faq"></a> FAQ
 
-## Where is my context menu?
+## <a name="context-menu"></a> Where is my context menu?
 
 Since Acme Plumbing binds itself to the right mouse button, you can't access the right click menu normally. To access it you can double click your right mouse button instead.
 
@@ -214,6 +219,6 @@ However, if you don't want Acme Plumbing on your right mouse button, you can mov
 ]
 ```
 
-# License
+# <a name="license"></a> License
 
 MIT
