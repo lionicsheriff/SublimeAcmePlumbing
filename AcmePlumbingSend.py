@@ -11,6 +11,5 @@ class AcmePlumbingSend(MouseCommand):
             "cwd": os.path.dirname(file_name) if file_name else None,
             "src": self.view.id(),
         }
-        self.remove_selection("1") # in case it was expanded
         self.view.sel().clear()
         self.view.run_command("acme_plumbing", message)
