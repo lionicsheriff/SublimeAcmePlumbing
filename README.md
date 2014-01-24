@@ -179,7 +179,7 @@ The rule is saved in this format:
 #### OtherPlugin.Plumbing.py
 ```python
 import sublime
-from SublimeAcmePluming import AcmePlumbing
+from AcmePlumbing import AcmePlumbing
 
 def greet(message, args, match_data):
     window = sublime.active_window()
