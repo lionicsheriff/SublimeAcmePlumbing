@@ -201,7 +201,7 @@ This plugin sets up the plumbing so that anything you right click on will open a
 
 ## <a name="context-menu"></a> Where is my context menu?
 
-Since Acme Plumbing binds itself to the right mouse button, you can't access the right click menu normally. To access it you can double click your right mouse button instead.
+Since Acme Plumbing binds itself to the right mouse button, you can't access the right click menu normally. Don't panic: it is just a shift + right click away.
 
 However, if you don't want Acme Plumbing on your right mouse button, you can move it to the middle mouse button by putting this into Default.sublime-mousemap in the Users package directory.
 
