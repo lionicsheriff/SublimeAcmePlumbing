@@ -104,7 +104,7 @@ def get_rules():
 
 def get_commands():
     return dict({}
-       |get_module_methods('SublimeAcmePlumbing.Commands').items()
+       |get_module_methods('Acme Plumbing.Commands').items()
        |get_module_methods('User.AcmePlumbingCommands').items()
        )
 
