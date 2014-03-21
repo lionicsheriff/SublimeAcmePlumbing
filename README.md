@@ -62,6 +62,11 @@ is_file tests if the message data references a file. If it fails, it tries again
 
 is_dir tests if the message data references a directory. Like is_file, if it fails it tries again as a relative path using the current working directory set in the message. If a directory is found, the message data is set to the full path.
 
+### list_dir
+
+> see Commands.py@list_dir
+
+list_dir assumes the message data is the path to a directory and lists it. Each item in the directory is expanded to its full path, and are separated by new lines. The message data is replaced with the list of items.
 
 ### extract_jump
 
@@ -86,6 +91,12 @@ Results from the pattern test can be replaced by either referencing them by thei
 > see Commands.py@open\_in\_tab
 
 open\_in\_tab opens whatever is in message['data'] in a new tab. If a file exists with that path it will open that file. Otherwise it will assume that the data is a shell command. It will run the command and if there is output it will be placed in a new tab. An example of this is the rule to open man pages.
+
+### display_data\_in_new\_tab
+
+> see Commands.py@display_data_in_new_tab
+
+display_data_in_new_tab creates a new tab and outputs the contents of the message data into it.
 
 ### jump
 

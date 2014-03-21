@@ -35,8 +35,8 @@
         // list directories in a new tab
         [
             "is_dir",
-            ["prepare_command", "cmd /s /c for /F %A in ('dir /b $_') do @echo $_\\%A"],
-            "open_in_tab",
+            "list_dir"
+            "display_data_in_new_tab",
         ],
         // jump to a location in the current file
         [

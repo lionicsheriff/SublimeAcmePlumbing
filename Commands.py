@@ -191,3 +191,22 @@ def strip(message, args, pipeline_data):
     chars = args[0]
     message['data'] = message['data'].strip(chars)
     return chars # give visiblity to the characters stripped (maybe return args?)
+
+def list_dir(message, args, pipeline_data):
+    """ List the directory contents in a fashion that open_in_tab can use """
+    # this is mostly because there is no nice way to do it with the windows shell.
+    # on the bright side it can make output relative to the tab
+    cwd = message['data']
+    files = [os.path.join(cwd, f) for f in os.listdir(cwd)] # needs to be a full path, 'cause generated tabs don't have a file that we can extract the cwd forom
+    contents = "\n".join(files)
+    message['data'] = contents
+    return contents
+
+def display_data_in_new_tab(message, args, pipeline_data):
+    """ Displays the current message data in a new tab """
+    window = sublime.active_window()
+    tab = window.new_file()
+    tab.set_scratch(True)
+    edit_token = message['edit_token']
+    tab.insert(edit_token, 0, message['data'])
+    return tab
