@@ -91,7 +91,7 @@ def prepare_command(message, args, pipeline_data):
     return command
 
 def extract_jump(message, args, pipeline_data):
-    """ 
+    """
     Extracts a jump command from the data, and proceeds to the next step.
     Jump commands have the same syntax as Go To Anything
     e.g.:
@@ -126,7 +126,7 @@ def jump(message, args, pipeline_data):
             view_file = view.file_name()
             result_file = result[0]
 
-            # annoyingly the result format is different than the file name in windows                     
+            # annoyingly the result format is different than the file name in windows
             if os.name == 'nt':
                 if not result_file.startswith("//"):
                     # unc paths start with // and they probably only need normalisation
@@ -150,7 +150,7 @@ def jump(message, args, pipeline_data):
 
         # get the current position, so you can search forwards if the
         # jump is called on the same page
-        sel = view.sel() 
+        sel = view.sel()
         current_pos = view.sel()[0] if len(sel) > 0 else sublime.Region(0,0)
         next_pos = view.find(jump_location,current_pos.b + 1) # test pass the cursor so it can find the next instance
 

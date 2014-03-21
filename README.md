@@ -9,8 +9,8 @@
 # <a name="what"></a> What
 
 + Right click on https://www.google.com/search?q=Acme+Editor and a google search is opened in your browser.
-+ Right click on Commands.py@prepare_command and Commands.py is opened at the definition for prepare_command. 
-+ Right click on pydoc(re) to see help on python regular expressions. 
++ Right click on Commands.py@prepare_command and Commands.py is opened at the definition for prepare_command.
++ Right click on pydoc(re) to see help on python regular expressions.
 + Right click on shutdown and your computer turns off (causing you to wonder why you set up that last one).
 
 # <a name="why"></a> Why
@@ -104,7 +104,7 @@ display_data_in_new_tab creates a new tab and outputs the contents of the messag
 
 jump uses the results from extract_jump and moves the cursor to a new location. It uses syntax similar to Go To Anything:
 
-* __@__ jump to symbol 
+* __@__ jump to symbol
 * __#__ jump to text
 * __:__ jump to line
 
