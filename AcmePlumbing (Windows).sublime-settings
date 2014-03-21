@@ -35,8 +35,8 @@
         // list directories in a new tab
         [
             "is_dir",
-            "list_dir"
-            "display_data_in_new_tab",
+            "list_dir",
+            "display_data_in_new_tab"
         ],
         // jump to a location in the current file
         [
