@@ -1,5 +1,5 @@
 import sublime, sublime_plugin
-import sys, types, os, json
+import sys, types, os, json, shutil
 from copy import deepcopy
 
 def settings():
@@ -46,7 +46,7 @@ def add_rule(key, comment, rule):
     # default pipeline.
     if not os.path.isfile(user_settings):
         default_settings = os.path.join(sublime.packages_path(),'User',settings_file_name())
-        shutil.copysile(default_settings, file_name)
+        shutil.copyfile(default_settings, user_settings)
 
     lines = [] # all lines in the settings file
     rule_section = [] # lines for the current rule
